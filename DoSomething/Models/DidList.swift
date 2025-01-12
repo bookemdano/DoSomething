@@ -1,0 +1,44 @@
+//
+//  DidList.swift
+//  MacLab
+//
+//  Created by Daniel Francis on 1/9/25.
+//
+
+import Foundation
+
+
+struct DidList : Codable {
+    var Dids: [Did] = []
+    enum CodingKeys: String, CodingKey {
+        case Dids
+    }
+
+    public mutating func Add(name: String)
+    {
+        if (name.isEmpty){
+            return
+        }
+        Dids.append(Did(name: name))
+    }
+    public mutating func Delete(name: String)
+    {
+        Dids.removeAll(where: { $0.Name == name})
+    }
+    public mutating func Done(did: Did, date: Date)
+    {
+        let index = Dids.firstIndex(where: { $0.id == did.id})
+        Dids[index!].SetDone(date: date)
+    }
+    public mutating func UnDone(did: Did, date: Date)
+    {
+        let index = Dids.firstIndex(where: { $0.id == did.id})
+        Dids[index!].SetUnDone(date: date)
+    }
+    public func GetDids(date: Date) -> [Did] {
+        return Dids.filter { $0.DoneOnDate(date: date) == true}
+    }
+    public func GetDidnts(date: Date) -> [Did] {
+        return Dids.filter { $0.DoneOnDate(date: date) == false}
+    }
+}
