@@ -9,10 +9,20 @@ import Foundation
 
 struct DidPersist {
     static let _iop = IOPAws(app: "ToDone")
-  
+    static func ChangeOwner(owner: String){
+        UserDefaults.standard.set(owner, forKey: "Owner")
+    }
+    static func GetOwner() -> String{
+        return UserDefaults.standard.string(forKey: "Owner") ?? "Dan"
+    }
+    static func JsonName() -> String{
+        let rv = "dids\(GetOwner()).json"
+        return rv
+    }
+    
     static func Read() async -> [Did]{
         
-        let content = await _iop.Read(dir: "Data", file: "didsDan.json")
+        let content = await _iop.Read(dir: "Data", file: JsonName())
         if (content.isEmpty){
             return DidList().Dids
         }
@@ -40,7 +50,7 @@ struct DidPersist {
         do {
             let jsonData = try JSONEncoder().encode(didList)
             if let jsonString = String(data: jsonData, encoding: .utf8) {
-                await _iop.Write(dir: "Data", file: "didsDan.json", content: jsonString)
+                await _iop.Write(dir: "Data", file: JsonName(), content: jsonString)
             }
         } catch {
             print("Error serializing JSON: \(error)")

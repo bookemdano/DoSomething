@@ -37,7 +37,7 @@ struct ContentView: View {
                     }
                     .padding(5)
                     .background(item.color(done: true, from: _date))
-                    .cornerRadius(20)
+                    .cornerRadius(10)
                 }.background(Color.green.opacity(0.1))
 
                 // not done items
@@ -49,7 +49,7 @@ struct ContentView: View {
                     }
                     .padding(5)
                     .background(item.color(done: false, from: _date))
-                    .cornerRadius(20)
+                    .cornerRadius(10)
                 }
                 HStack {
                     NavigationLink(destination: DidsView()) {

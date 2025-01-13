@@ -11,6 +11,7 @@ import SwiftUI
 struct DidsView: View {
     let _iop = IOPAws(app: "ToDone")
     @State private var _didList: DidList = .init()
+    @State private var _owner: String = DidPersist.GetOwner()
     @State private var _newDid: String = ""
     @State private var _showingAlert = false
     @State private var _deleteItem: String = ""
@@ -25,12 +26,24 @@ struct DidsView: View {
                             Spacer()
                             Text(item.Details(from: Date()))
                         }
+                        .padding(5)
+                        
                     }
                     .background(item.color(done: false, from: Date()))
                 }
                 .onDelete(perform: deleteItem)
             }
             Spacer()
+            HStack{
+                Text("Owner: ")
+                TextField("Owner", text: $_owner)
+                    .background(Color.yellow.opacity(0.2))
+                Button(action: {
+                    changeOwner(_owner)
+                }){
+                    Text("Change")
+                }
+            }
             HStack {
                 Spacer()
                 TextField("New action", text: $_newDid)
@@ -70,6 +83,11 @@ struct DidsView: View {
             await DidPersist.SaveAsync(didList: _didList)
             Refresh()
         }
+    }
+    func changeOwner(_ owner: String)
+    {
+        DidPersist.ChangeOwner(owner: owner)
+        Refresh()
     }
     
     func Refresh()
