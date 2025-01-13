@@ -21,6 +21,8 @@ struct DidView: View {
             //.font(.largeTitle)
             List(did.History.sorted(by: >), id: \.self) { history in
                 Text(HistoryText(history: history))
+                    .background(did.color(done: true, from: Did.parseDate(history)!))
+            
             }
             Button(action: {
                 Save()

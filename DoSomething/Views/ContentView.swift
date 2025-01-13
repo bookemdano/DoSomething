@@ -28,25 +28,27 @@ struct ContentView: View {
                         Text("⏭️")
                     }
                 }
+                // done items
                 FlowLayout(items: _didList.GetDids(date: _date), spacing: 10){ item in
                     Button(action: {
                         undone(item)
                     }) {
-                        Text(item.buttonText(from: _date))
+                        Text(item.Name)
                     }
                     .padding(5)
-                    .background(Color.green.opacity(0.3))
+                    .background(item.color(done: true, from: _date))
                     .cornerRadius(20)
                 }.background(Color.green.opacity(0.1))
 
+                // not done items
                 FlowLayout(items: _didList.GetDidnts(date: _date), spacing: 10){ item in
                     Button(action: {
                         done(item)
                     }) {
-                        Text(item.buttonText(from: _date))
+                        Text(item.Name)
                     }
                     .padding(5)
-                    .background(Color.gray.opacity(0.1))
+                    .background(item.color(done: false, from: _date))
                     .cornerRadius(20)
                 }
                 HStack {

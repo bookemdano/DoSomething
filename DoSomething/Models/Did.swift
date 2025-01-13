@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUICore
 // TODO every other day streaks or weekday streaks
 // TODO Mark items as "non-current" so only show up in maint
 // TODO Faster streak check
@@ -75,6 +76,23 @@ struct Did : Codable, Hashable, Identifiable, Comparable
             return Name + "⛓️"
         }
         return Name
+    }
+    func color(done: Bool, from: Date) -> Color {
+        let streak = Streak(from: from)
+        if (streak == 0){
+            return Color.gray.opacity(0.1)
+        }
+        else {
+            var opp = Double(streak) / 10.0
+            if (opp > 1){
+                opp = 1
+            }
+            if (done) {
+                return Color.green.opacity(opp)
+            } else {
+                return Color.orange.opacity(opp)
+            }
+        }
     }
     func Details(from: Date) -> String {
         let streak = Streak(from: from)

@@ -26,6 +26,7 @@ struct DidsView: View {
                             Text(item.Details(from: Date()))
                         }
                     }
+                    .background(item.color(done: false, from: Date()))
                 }
                 .onDelete(perform: deleteItem)
             }
