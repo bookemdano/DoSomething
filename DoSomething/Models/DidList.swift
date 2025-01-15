@@ -25,11 +25,16 @@ struct DidList : Codable {
     {
         Dids.removeAll(where: { $0.Name == name})
     }
+    public func DonePoints(date: Date) -> Int
+    {
+        return GetDids(date: date).reduce(0){ $0 + $1.GetPoints()}
+    }
     public mutating func Done(did: Did, date: Date)
     {
         let index = Dids.firstIndex(where: { $0.id == did.id})
         Dids[index!].SetDone(date: date)
     }
+    
     public mutating func UnDone(did: Did, date: Date)
     {
         let index = Dids.firstIndex(where: { $0.id == did.id})

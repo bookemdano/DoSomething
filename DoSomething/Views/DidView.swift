@@ -11,11 +11,16 @@ import SwiftUI
 struct DidView: View {
     let did: Did
     @State var _didName: String = ""
+    @State var _points: String = "1"
     var body: some View {
         VStack
         {
             Text("Name: ")
             TextField("Name", text: $_didName)
+                .background(Color.yellow.opacity(0.2))
+            Text("Points: ")
+            TextField("points", text: $_points)
+                .keyboardType(.numberPad)
                 .background(Color.yellow.opacity(0.2))
             Text("Streak: \(did.Streak(from: Date()))")
             //.font(.largeTitle)
@@ -32,6 +37,7 @@ struct DidView: View {
         }
         .onAppear {
             _didName = did.Name
+            _points = String(did.GetPoints())
         }
         .navigationTitle(did.Name)
     }
@@ -46,7 +52,7 @@ struct DidView: View {
     func Save()
     {
         Task {
-            await DidPersist.UpdateDid(id: did.id, name: _didName)
+            await DidPersist.UpdateDid(id: did.id, name: _didName, points: Int(_points) ?? 1)
         }
     }
 

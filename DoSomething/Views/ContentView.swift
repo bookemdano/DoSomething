@@ -20,7 +20,7 @@ struct ContentView: View {
                     }){
                         Text("⏮️")
                     }
-                    Text(_date.danFormat)
+                    Text(_date.danFormat + "(\(_didList.DonePoints(date: _date)))")
                         .bold()
                     Button(action: {
                         Next()

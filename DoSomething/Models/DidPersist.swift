@@ -56,13 +56,14 @@ struct DidPersist {
             print("Error serializing JSON: \(error)")
         }
     }
-    static func UpdateDid(id: UUID, name: String) async
+    static func UpdateDid(id: UUID, name: String, points: Int) async
     {
         Task{
             var dids = await Read()
 
             let index = dids.firstIndex(where: { $0.id == id})
             dids[index!].Name = name
+            dids[index!].Points = points
             let didList = DidList(Dids: dids)
             await SaveAsync(didList: didList)
         }

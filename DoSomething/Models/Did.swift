@@ -98,6 +98,7 @@ struct Did : Codable, Hashable, Identifiable, Comparable
         let streak = Streak(from: from)
         var streakString: String = ""
         var doneString: String = " L:\(LastDoneString())"
+        var pointsString = ""
         if (streak > 0){
             streakString = " ⛓️:\(streak)"
             doneString = ""
@@ -105,7 +106,11 @@ struct Did : Codable, Hashable, Identifiable, Comparable
         if (DoneOnDate(date: Date().dateOnly)){
             doneString = " ✅"
         }
-        return "D:\(History.count)\(doneString)\(streakString)"
+        if (GetPoints() > 1){
+            pointsString = " " + String(GetPoints()) + "pts"
+        }
+            
+        return "D:\(History.count)\(doneString)\(streakString)\(pointsString)"
     }
     mutating func SetDone(date: Date)
     {
@@ -120,9 +125,14 @@ struct Did : Codable, Hashable, Identifiable, Comparable
         case id
         case Name
         case History
+        case Points
+    }
+    func GetPoints() -> Int {
+        return Points ?? 1
     }
     var id = UUID() // Automatically generate a unique identifier
     var Name: String
+    var Points: Int? = 1
     var History: [String] = []
 }
 
