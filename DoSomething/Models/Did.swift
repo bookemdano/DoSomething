@@ -114,10 +114,16 @@ struct Did : Codable, Hashable, Identifiable, Comparable
     }
     mutating func SetDone(date: Date)
     {
+        if (Points == nil){
+            Points = 1
+        }
         History.append(date.danFormat)
     }
     mutating func SetUnDone(date: Date)
     {
+        if (Points == nil){
+            Points = 1
+        }
         History.removeAll(where: { $0 == date.danFormat })
     }
 

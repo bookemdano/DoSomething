@@ -15,8 +15,10 @@ struct DidsView: View {
     @State private var _newDid: String = ""
     @State private var _showingAlert = false
     @State private var _deleteItem: String = ""
+    @State private var _pointsHistory : [Int] = []
     var body: some View {
         VStack{
+     
             List{
                 ForEach(_didList.Dids){ item in
                     NavigationLink(destination: DidView(did: item)){
@@ -32,6 +34,37 @@ struct DidsView: View {
                     .background(item.color(done: false, from: Date()))
                 }
                 .onDelete(perform: deleteItem)
+            }
+            Spacer()
+            TimelineView(.animation) { timelineContext in
+                Canvas(
+                    opaque: true,
+                    colorMode: .linear,
+                    rendersAsynchronously: false
+                ) { context, size in
+                    var path : Path = Path()
+                    //path.move(to: CGPoint(x: 0, y: size.height))
+                    if (_pointsHistory.count > 0)
+                    {
+                        var x = 0
+                        let xfactor = Int(size.width) / _pointsHistory.count
+                        let pointsmax = (_pointsHistory.max(by: {$0 < $1}) ?? 50)
+                        let ymax = ((pointsmax / 5) + 1)*5
+                        let yfactor = Int(size.height) / ymax
+                        _pointsHistory.forEach { points in
+                            let y = (ymax - points) * yfactor
+                            path.addLine(to: CGPoint(x:x, y:y))
+                            x += xfactor
+                        }
+                        context.stroke(
+                            path,
+                            with: .color(.green),
+                            lineWidth: 3
+                        )
+                    }
+                }
+                .frame(height: 150)
+                .background(Color.gray)
             }
             Spacer()
             HStack{
@@ -94,6 +127,13 @@ struct DidsView: View {
     {
         Task{
             _didList.Dids = await DidPersist.Read()
+            _pointsHistory.removeAll()
+            var date = Calendar.current.date(byAdding: .day, value: -30, to: Date()) ?? Date()
+            while(date <= Date())
+            {
+                _pointsHistory.append(_didList.DonePoints(date: date))
+                date = date.tomorrow
+            }
         }
        
     }
