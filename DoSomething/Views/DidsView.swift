@@ -64,7 +64,7 @@ struct DidsView: View {
                     }
                 }
                 .frame(height: 150)
-                .background(Color.gray)
+                .background(Color.black)
             }
             Spacer()
             HStack{

@@ -56,7 +56,7 @@ struct DidPersist {
             print("Error serializing JSON: \(error)")
         }
     }
-    static func UpdateDid(id: UUID, name: String, points: Int) async
+    static func UpdateDid(id: UUID, name: String, points: Int, oneTime: Bool, retired: Bool) async
     {
         Task{
             var dids = await Read()
@@ -64,6 +64,9 @@ struct DidPersist {
             let index = dids.firstIndex(where: { $0.id == id})
             dids[index!].Name = name
             dids[index!].Points = points
+            dids[index!].Retired = retired
+            dids[index!].OneTime = oneTime
+            
             let didList = DidList(Dids: dids)
             await SaveAsync(didList: didList)
         }

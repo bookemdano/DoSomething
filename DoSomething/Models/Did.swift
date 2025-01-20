@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUICore
 // TODO every other day streaks or weekday streaks
-// TODO Mark items as "non-current" so only show up in maint
+// TODONE Mark items as "non-current" so only show up in maint
 // TODO Faster streak check
 struct Did : Codable, Hashable, Identifiable, Comparable
 {
@@ -114,17 +114,34 @@ struct Did : Codable, Hashable, Identifiable, Comparable
     }
     mutating func SetDone(date: Date)
     {
-        if (Points == nil){
-            Points = 1
-        }
+        Init()
         History.append(date.danFormat)
     }
     mutating func SetUnDone(date: Date)
     {
+        Init()
+        History.removeAll(where: { $0 == date.danFormat })
+    }
+
+    func IsAvailable() -> Bool {
+        if (Retired == true){
+            return false
+        }
+        if (OneTime == true && !History.isEmpty){
+            return false
+        }
+        return true
+    }
+    mutating func Init(){
         if (Points == nil){
             Points = 1
         }
-        History.removeAll(where: { $0 == date.danFormat })
+        if (OneTime == nil){
+            OneTime = false
+        }
+        if (Retired == nil){
+            Retired = false
+        }
     }
 
     enum CodingKeys: String, CodingKey {
@@ -132,6 +149,8 @@ struct Did : Codable, Hashable, Identifiable, Comparable
         case Name
         case History
         case Points
+        case OneTime
+        case Retired
     }
     func GetPoints() -> Int {
         return Points ?? 1
@@ -140,6 +159,8 @@ struct Did : Codable, Hashable, Identifiable, Comparable
     var Name: String
     var Points: Int? = 1
     var History: [String] = []
+    var OneTime: Bool? = false
+    var Retired: Bool? = false
 }
 
 extension Date {

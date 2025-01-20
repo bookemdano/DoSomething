@@ -44,6 +44,6 @@ struct DidList : Codable {
         return Dids.filter { $0.DoneOnDate(date: date) == true}
     }
     public func GetDidnts(date: Date) -> [Did] {
-        return Dids.filter { $0.DoneOnDate(date: date) == false}
+        return Dids.filter { $0.DoneOnDate(date: date) == false && $0.IsAvailable()}
     }
 }
