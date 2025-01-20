@@ -46,4 +46,21 @@ struct DidList : Codable {
     public func GetDidnts(date: Date) -> [Did] {
         return Dids.filter { $0.DoneOnDate(date: date) == false && $0.IsAvailable()}
     }
+    public func GetGroups() -> [String: [Did]] {
+        var rv = [String: [Did]]()
+        rv["Active"] = []
+        rv["OneTime"] = []
+        rv["Retired"] = []
+       
+        Dids.forEach {
+            if ($0.IsAvailable()) {
+                rv["Active"]?.append($0)
+            } else if ($0.OneTime == true) {
+                rv["OneTime"]?.append($0)
+            } else {
+                rv["Retired"]?.append($0)
+            }
+        }
+        return rv
+    }
 }

@@ -15,23 +15,31 @@ struct DidsView: View {
     @State private var _newDid: String = ""
     @State private var _showingAlert = false
     @State private var _deleteItem: String = ""
+    @State private var _groups:[String: [Did]] = [:]
     @State private var _pointsHistory : [Int] = []
     var body: some View {
         VStack{
-     
             List{
-                ForEach(_didList.Dids){ item in
-                    NavigationLink(destination: DidView(did: item)){
-                        HStack
-                        {
-                            Text(item.Name).font(.headline)
-                            Spacer()
-                            Text(item.Details(from: Date()))
+                ForEach(_groups.keys.sorted(), id: \.self){
+                    group in
+                    Section{
+                        Text(group)
+                        ForEach(_groups[group]!, id: \.self) { item in
+                            NavigationLink(destination: DidView(did: item)){
+                                HStack
+                                {
+                                    Text(item.Name)
+                                        .font(.headline)
+                                        //.strikethrough(!item.IsAvailable())
+                                    Spacer()
+                                    Text(item.Details(from: Date()))
+                                }
+                                .padding(5)
+                                
+                            }
+                            .background(item.color(done: false, from: Date()))
                         }
-                        .padding(5)
-                        
                     }
-                    .background(item.color(done: false, from: Date()))
                 }
                 .onDelete(perform: deleteItem)
             }
@@ -127,6 +135,7 @@ struct DidsView: View {
     {
         Task{
             _didList.Dids = await DidPersist.Read()
+            _groups = _didList.GetGroups()
             _pointsHistory.removeAll()
             var date = Calendar.current.date(byAdding: .day, value: -30, to: Date()) ?? Date()
             while(date <= Date())
