@@ -41,7 +41,7 @@ struct DidsView: View {
                         }
                     }
                 }
-                .onDelete(perform: deleteItem)
+                //.onDelete(perform: deleteItem)
             }
             Spacer()
             TimelineView(.animation) { timelineContext in
@@ -85,16 +85,8 @@ struct DidsView: View {
                     Text("Change")
                 }
             }
-            HStack {
-                Spacer()
-                TextField("New action", text: $_newDid)
-                Button(action: {
-                    add(_newDid)
-                    _newDid = ""
-                }){
-                    Text("Add")
-                }
-                Spacer()
+            NavigationLink(destination: DidView(did: Did(name: "New Item"))) {
+                Text("New Item").bold()
             }
         }
         .navigationTitle("Maintenance")
@@ -107,7 +99,23 @@ struct DidsView: View {
         
     }
     func deleteItem(at offset: IndexSet) {
-        _didList.Dids.remove(atOffsets: offset)
+        
+        let keysArray = Array(_groups.keys)
+        let str = offset.first?.description
+        //_groups.indices.first(where: offset.contains)
+        
+        var key = keysArray.indices.first(where: offset.contains)
+        if key != nil {
+        
+            
+            //dictionary.removeValue(forKey: keyToRemove)
+            print("Removed key: \(key)")
+        } else {
+            print("Offset is out of bounds")
+        }
+
+        //var items = _didList.GetGroups().indices.first(where: offset.contains)
+        //_didList.Dids.remove(atOffsets: offset)
         Task {
             await DidPersist.SaveAsync(didList: _didList)
             Refresh()

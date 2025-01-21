@@ -10,6 +10,8 @@ import SwiftUI
 
 struct DidView: View {
     let did: Did
+    @Environment(\.presentationMode) var presentationMode
+    @State private var _showDeleteConfirmation = false
     @State var _didName: String = ""
     @State var _points: String = "1"
     @State var _oneTime: Bool = false
@@ -33,11 +35,39 @@ struct DidView: View {
                     .background(did.color(done: true, from: Did.parseDate(history)!))
             
             }
-            Button(action: {
-                Save()
-            }){
-                Text("Save")
+            HStack{
+                Button(action: {
+                    Save()
+                }){
+                    Text("Save")
+                }.padding()
+                    .background(Color.blue)
+                    .foregroundColor(.white)
+                    .cornerRadius(8)
+                Button("Delete") {
+                    _showDeleteConfirmation = true
+                }.padding()
+                    .background(Color.blue)
+                    .foregroundColor(.white)
+                    .cornerRadius(8)
+                .confirmationDialog("Are you sure?", isPresented: $_showDeleteConfirmation, titleVisibility: .visible) {
+                    Button("Delete", role: .destructive) {
+                        Delete()
+                    }
+                    Button("Cancel", role: .cancel) {}
+                } message: {
+                    Text("This action cannot be undone.")
+                }
+                Button(action: {
+                    presentationMode.wrappedValue.dismiss()
+                }){
+                    Text("Cancel")
+                }.padding()
+                    .background(Color.blue)
+                    .foregroundColor(.white)
+                    .cornerRadius(8)
             }
+
         }
         .onAppear {
             _didName = did.Name
@@ -55,10 +85,20 @@ struct DidView: View {
         }
         return txt
     }
+    
+    func Delete()
+    {
+        Task {
+            await DidPersist.RemoveDid(id: did.id)
+            presentationMode.wrappedValue.dismiss()
+        }
+    }
+    
     func Save()
     {
         Task {
             await DidPersist.UpdateDid(id: did.id, name: _didName, points: Int(_points) ?? 1, oneTime: _oneTime, retired: _retired)
+            presentationMode.wrappedValue.dismiss()
         }
     }
 
