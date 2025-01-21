@@ -56,7 +56,7 @@ struct DidView: View {
                     }
                     Button("Cancel", role: .cancel) {}
                 } message: {
-                    Text("This action cannot be undone.")
+                    Text("This action cannot be undone. Deleting means it never was.")
                 }
                 Button(action: {
                     presentationMode.wrappedValue.dismiss()
