@@ -11,7 +11,7 @@ import SwiftUI
 struct DidsView: View {
     let _iop = IOPAws(app: "ToDone")
     @State private var _didList: DidList = .init()
-    @State private var _owner: String = DidPersist.GetOwner()
+    @State private var _owner: String = IOPAws.GetOwner()
     @State private var _newDid: String = ""
     @State private var _showingAlert = false
     @State private var _deleteItem: String = ""
@@ -135,7 +135,7 @@ struct DidsView: View {
     }
     func changeOwner(_ owner: String)
     {
-        DidPersist.ChangeOwner(owner: owner)
+        IOPAws.ChangeOwner(owner: owner)
         Refresh()
     }
     

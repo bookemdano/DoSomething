@@ -9,14 +9,9 @@ import Foundation
 
 struct DidPersist {
     static let _iop = IOPAws(app: "ToDone")
-    static func ChangeOwner(owner: String){
-        UserDefaults.standard.set(owner, forKey: "Owner")
-    }
-    static func GetOwner() -> String{
-        return UserDefaults.standard.string(forKey: "Owner") ?? "Dan"
-    }
+
     static func JsonName() -> String{
-        let rv = "dids\(GetOwner()).json"
+        let rv = "dids\(IOPAws.GetOwner()).json"
         return rv
     }
     

@@ -1,14 +1,14 @@
 //
-//  ContentView.swift
-//  MacLab
+//  MoodView.swift
+//  DoSomething
 //
-//  Created by Daniel Francis on 1/3/25.
+//  Created by Daniel Francis on 1/24/25.
 //
 
 import SwiftUI
 
-struct ContentView: View {
-    @State private var _didList: DidList = .init()
+struct MoodView: View {
+    @State private var _moodSet: MoodSet = .GetDefault()
     @State private var _date: Date = Date().dateOnly
     
     var body: some View {
@@ -20,7 +20,7 @@ struct ContentView: View {
                     }){
                         Text("⏮️")
                     }
-                    Text(_date.danFormat + "(\(_didList.DonePoints(date: _date)))")
+                    Text(_date.danFormat)
                         .bold()
                     Button(action: {
                         Next()
@@ -28,36 +28,38 @@ struct ContentView: View {
                         Text("⏭️")
                     }
                 }
-                // done items
-                FlowLayout(items: _didList.GetDids(date: _date), spacing: 10){ item in
+                FlowLayout(items: _moodSet.GetItems(date: _date, status: .Up), spacing: 10){ item in
                     Button(action: {
-                        undone(item)
+                        Move(moodItem: item, moveFrom: .Up)
                     }) {
                         Text(item.Name).bold()
                     }
                     .padding(5)
-                    .background(item.color(done: true, from: _date))
+                    //.background(item.color(done: false, from: _date))
                     .cornerRadius(10)
                 }.background(Color.green.opacity(0.1))
-
-                // not done items
-                FlowLayout(items: _didList.GetDidnts(date: _date), spacing: 10){ item in
+                FlowLayout(items: _moodSet.GetItems(date: _date, status: .NA), spacing: 10){ item in
                     Button(action: {
-                        done(item)
+                        Move(moodItem: item, moveFrom: .NA)
                     }) {
                         Text(item.Name).bold()
                     }
                     .padding(5)
-                    .background(item.color(done: false, from: _date))
+                    //.background(item.color(done: false, from: _date))
                     .cornerRadius(10)
-                }
+                }.background(Color.gray.opacity(0.1))
+                FlowLayout(items: _moodSet.GetItems(date: _date, status: .Down), spacing: 10){ item in
+                    Button(action: {
+                        Move(moodItem: item, moveFrom: .Down)
+                    }) {
+                        Text(item.Name).bold()
+                    }
+                    .padding(5)
+                    //.background(item.color(done: false, from: _date))
+                    .cornerRadius(10)
+                }.background(Color.blue.opacity(0.1))
+
                 HStack {
-                    NavigationLink(destination: MoodView()) {
-                        Text("Mood")
-                    }
-                    NavigationLink(destination: DidsView()) {
-                        Text("Maintenance")
-                    }
                     Button(action: {
                         Refresh()
                     }){
@@ -86,22 +88,13 @@ struct ContentView: View {
     }
     func Refresh(){
         Task{
-            _didList.Dids = await DidPersist.Read()
+            _moodSet.Refresh(other: await MoodPersist.Read(), date: _date);
         }
     }
-
-    func done(_ did: Did)
+    
+    func Move(moodItem: MoodItem, moveFrom: MoodStatusEnum)
     {
-        _didList.Done(did: did, date: _date)
-        DidPersist.SaveSync(didList: _didList)
+        _moodSet.Move(date: _date, moodItem: moodItem, moveFrom: moveFrom)
+        MoodPersist.SaveSync(moodSet: _moodSet)
     }
-    func undone(_ did: Did) {
-        _didList.UnDone(did: did, date: _date)
-        DidPersist.SaveSync(didList: _didList)
-     }
 }
-
-#Preview {
-    ContentView()
-}
-
