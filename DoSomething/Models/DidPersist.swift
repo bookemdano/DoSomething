@@ -58,7 +58,7 @@ struct DidPersist {
         let didList = DidList(Dids: dids)
         await SaveAsync(didList: didList)
     }
-    static func UpdateDid(id: UUID, name: String, points: Int, oneTime: Bool, retired: Bool) async
+    static func UpdateDid(id: UUID, name: String, points: Int, oneTime: Bool, retired: Bool, notes: String) async
     {
         Task{
             var dids = await Read()
@@ -70,6 +70,7 @@ struct DidPersist {
                 did.Points = points
                 did.OneTime = oneTime
                 did.Retired = retired
+                did.Notes = notes
                 dids.append(did)
             }
             else
@@ -78,6 +79,7 @@ struct DidPersist {
                 dids[index!].Points = points
                 dids[index!].Retired = retired
                 dids[index!].OneTime = oneTime
+                dids[index!].Notes = notes
             }
 
             let didList = DidList(Dids: dids)

@@ -22,12 +22,7 @@ struct MoodSet : Codable
         MoodItems.append(contentsOf: other.MoodItems)
         
         if (!MoodDays.contains(where: {$0.Date == date})) {
-            var moods = [MoodStatusEnum: [MoodItem]]()
-            moods[.NA] = []
-            MoodItems.forEach { moods[.NA]!.append($0) }
-            moods[.Up] = []
-            moods[.Down] = []
-            MoodDays.append(MoodDay(Date: date, Moods: moods))
+            MoodDays.append(MoodDay(Date: date))
         }
     }
     static func GetDefault() -> MoodSet
@@ -42,22 +37,43 @@ struct MoodSet : Codable
     
     func GetItems(date: Date, status: MoodStatusEnum) -> [MoodItem]
     {
-        MoodDays.first(where: {$0.Date == date})?.Moods[status] ?? []
+        var moods = MoodDays.first(where: {$0.Date == date})?.Moods
+        if (moods == nil){
+            moods = [:]
+        }
+        if (status == .NA) {
+            MoodItems.forEach { item in
+                if (!moods!.contains(where: {$0.key == item.id})) {
+                    moods![item.id] = .NA
+                }
+            }
+        }
+        return moods!.filter({$0.value == status}).map({GetItem(id: $0.key)}).sorted(by: {$0.Name < $1.Name})
+    }
+    func GetItem(id: UUID) -> MoodItem{
+        return MoodItems.first(where: {$0.id == id}) ?? MoodItem(Name: "Missing")
+    }
+    mutating func NewMoodItem(name: String, date: Date)
+    {
+        MoodItems.append(MoodItem(Name: name))
     }
     mutating func Move(date: Date, moodItem: MoodItem, moveFrom: MoodStatusEnum)
     {
-        var index = MoodDays.firstIndex(where: {$0.Date == date})!
-        MoodDays[index].Moods[moveFrom]!.removeAll(where: {$0.id == moodItem.id})
+        if (!MoodDays.contains(where: {$0.Date == date})) {
+            MoodDays.append(MoodDay(Date: date))
+        }
+        let index = MoodDays.firstIndex(where: {$0.Date == date})!
         var moveTo: MoodStatusEnum = .NA
-  
         if (moveFrom == .Up) { moveTo = .Down }
         else if (moveFrom == .NA) { moveTo = .Up }
         else { moveTo = .NA }
         
-        MoodDays[index].Moods[moveFrom]!.removeAll(where: {$0.id == moodItem.id})
-        MoodDays[index].Moods[moveTo]!.append(moodItem)
-    
-        //var index = MoodDays.firstIndex(where: {$0.Date == date})
+        if (moveFrom != .NA) {
+            MoodDays[index].Moods.removeValue(forKey: moodItem.id)
+        }
+        if (moveTo != .NA) {
+            MoodDays[index].Moods[moodItem.id] = moveTo
+        }
     }
 }
 enum MoodStatusEnum : String, Codable{
@@ -69,7 +85,7 @@ struct MoodDay : Codable
 {
 
     var Date: Date
-    var Moods: [MoodStatusEnum: [MoodItem]]
+    var Moods: [UUID: MoodStatusEnum] = [:]
   
     enum CodingKeys: String, CodingKey {
         case Date

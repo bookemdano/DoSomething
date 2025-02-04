@@ -28,7 +28,7 @@ struct DidsView: View {
                             NavigationLink(destination: DidView(did: item)){
                                 HStack
                                 {
-                                    Text(item.Name)
+                                    Text(item.NameString())
                                         .font(.headline)
                                         //.strikethrough(!item.IsAvailable())
                                     Spacer()
@@ -101,15 +101,13 @@ struct DidsView: View {
     func deleteItem(at offset: IndexSet) {
         
         let keysArray = Array(_groups.keys)
-        let str = offset.first?.description
+        //let str = offset.first?.description
         //_groups.indices.first(where: offset.contains)
         
-        var key = keysArray.indices.first(where: offset.contains)
+        let key = keysArray.indices.first(where: offset.contains)
         if key != nil {
-        
-            
             //dictionary.removeValue(forKey: keyToRemove)
-            print("Removed key: \(key)")
+            print("Removed key: \(key!)")
         } else {
             print("Offset is out of bounds")
         }

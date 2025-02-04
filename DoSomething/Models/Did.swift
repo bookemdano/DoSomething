@@ -94,6 +94,14 @@ struct Did : Codable, Hashable, Identifiable, Comparable
             }
         }
     }
+    func NameString() -> String {
+        if (Notes == nil && Notes != "") {
+            return Name
+        } else {
+            return Name + "*"
+        }
+        
+    }
     func Details(from: Date) -> String {
         let streak = Streak(from: from)
         var streakString: String = ""
@@ -151,6 +159,7 @@ struct Did : Codable, Hashable, Identifiable, Comparable
         case Points
         case OneTime
         case Retired
+        case Notes
     }
     func GetPoints() -> Int {
         return Points ?? 1
@@ -161,6 +170,7 @@ struct Did : Codable, Hashable, Identifiable, Comparable
     var History: [String] = []
     var OneTime: Bool? = false
     var Retired: Bool? = false
+    var Notes: String? = nil
 }
 
 extension Date {
@@ -183,7 +193,6 @@ extension Date {
         formatter.dateFormat = "yyyy-MM-dd" // Specify the format
         return formatter.string(from: self)
     }
-    
 }
 
 

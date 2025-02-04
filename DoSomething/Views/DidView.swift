@@ -14,18 +14,27 @@ struct DidView: View {
     @State private var _showDeleteConfirmation = false
     @State var _didName: String = ""
     @State var _points: String = "1"
-    @State var _oneTime: Bool = false
+    @State var _notes: String = ""
+ @State var _oneTime: Bool = false
     @State var _retired: Bool = false
     var body: some View {
         VStack
         {
-            Text("Name: ")
-            TextField("Name", text: $_didName)
-                .background(Color.yellow.opacity(0.2))
-            Text("Points: ")
-            TextField("points", text: $_points)
-                .keyboardType(.numberPad)
-                .background(Color.yellow.opacity(0.2))
+            HStack{
+                Text("Name: ")
+                TextField("Name", text: $_didName)
+                    .border(Color.gray)
+            }
+            HStack{
+                Text("Points: ")
+                TextField("points", text: $_points)
+                    .keyboardType(.numberPad)
+                    .border(Color.gray)
+            }
+            Text("Notes: ")
+            TextEditor(text: $_notes)
+                .frame(height: 80)
+                .border(Color.gray)
             Text("Streak: \(did.Streak(from: Date()))")
             Toggle("One-time", isOn: $_oneTime)
             Toggle("Retired", isOn: $_retired)
@@ -69,11 +78,13 @@ struct DidView: View {
             }
 
         }
+        .padding(5)
         .onAppear {
             _didName = did.Name
             _points = String(did.GetPoints())
             _retired = did.Retired ?? false
             _oneTime = did.OneTime ?? false
+            _notes = did.Notes ?? ""
         }
         .navigationTitle(did.Name)
     }
@@ -97,7 +108,7 @@ struct DidView: View {
     func Save()
     {
         Task {
-            await DidPersist.UpdateDid(id: did.id, name: _didName, points: Int(_points) ?? 1, oneTime: _oneTime, retired: _retired)
+            await DidPersist.UpdateDid(id: did.id, name: _didName, points: Int(_points) ?? 1, oneTime: _oneTime, retired: _retired, notes: _notes)
             presentationMode.wrappedValue.dismiss()
         }
     }

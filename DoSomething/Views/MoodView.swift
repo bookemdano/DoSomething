@@ -10,6 +10,7 @@ import SwiftUI
 struct MoodView: View {
     @State private var _moodSet: MoodSet = .GetDefault()
     @State private var _date: Date = Date().dateOnly
+    @State private var _newName: String = ""
     
     var body: some View {
         NavigationView{
@@ -60,12 +61,22 @@ struct MoodView: View {
                 }.background(Color.blue.opacity(0.1))
 
                 HStack {
+                    Text("New: ")
+                    TextField("New", text: $_newName)
+                        .background(Color.yellow.opacity(0.2))
+                    Button(action: {
+                        NewMoodItem(_newName)
+                    }){
+                        Text("⊕")
+                    }
+                    Spacer()
                     Button(action: {
                         Refresh()
                     }){
                         Text("🔄")
                     }
                 }
+                Spacer()
             }
             .refreshable {
                 Refresh()
@@ -91,7 +102,12 @@ struct MoodView: View {
             _moodSet.Refresh(other: await MoodPersist.Read(), date: _date);
         }
     }
-    
+    func NewMoodItem(_ name: String)
+    {
+        _newName = ""
+        _moodSet.NewMoodItem(name: name, date: _date)
+        MoodPersist.SaveSync(moodSet: _moodSet)
+    }
     func Move(moodItem: MoodItem, moveFrom: MoodStatusEnum)
     {
         _moodSet.Move(date: _date, moodItem: moodItem, moveFrom: moveFrom)
