@@ -140,6 +140,13 @@ struct Did : Codable, Hashable, Identifiable, Comparable
         }
         return true
     }
+    func GetCategory() -> String {
+        let cat = Category ?? ""
+        if (cat == "") {
+            return "None"
+        }
+        return cat;
+    }
     mutating func Init(){
         if (Points == nil){
             Points = 1

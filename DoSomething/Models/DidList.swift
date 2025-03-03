@@ -43,24 +43,42 @@ struct DidList : Codable {
     public func GetDids(date: Date) -> [Did] {
         return Dids.filter { $0.DoneOnDate(date: date) == true}
     }
-    public func GetDidnts(date: Date) -> [Did] {
-        return Dids.filter { $0.DoneOnDate(date: date) == false && $0.IsAvailable()}
+    public func GetDidnts(date: Date, cat: String) -> [Did] {
+        return Dids.filter { $0.DoneOnDate(date: date) == false && $0.IsAvailable() && (cat == "All" || $0.GetCategory() == cat)}
     }
-    public func GetGroups() -> [String: [Did]] {
+    public func GetCategories() -> [String] {
+        var rv = [String]()
+        rv.append("All")
+        Dids.forEach {
+            if ($0.IsAvailable()) {
+                let cat = $0.GetCategory()
+                if (!rv.contains(cat)) {
+                    rv.append(cat)
+                }
+            }
+        }
+        return rv
+    }
+    public func GetGroups(includeDone: Bool) -> [String: [Did]] {
         var rv = [String: [Did]]()
-        rv[""] = []
-        rv["[OneTime]"] = []
-        rv["[Retired]"] = []
+        if (includeDone){
+            rv["[OneTime]"] = []
+            rv["[Retired]"] = []
+        }
        
         Dids.forEach {
    
             if ($0.Retired == true) {
-                rv["[Retired]"]?.append($0)
+                if (includeDone) {
+                    rv["[Retired]"]?.append($0)
+                }
             } else if ($0.OneTime == true) {
-                rv["[OneTime]"]?.append($0)
+                if (includeDone) {
+                    rv["[OneTime]"]?.append($0)
+                }
             }
             else {
-                let cat = $0.Category ?? ""
+                let cat = $0.GetCategory()
                 if (!rv.keys.contains(cat)) {
                     rv[cat] = []
                 }

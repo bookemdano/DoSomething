@@ -39,22 +39,30 @@ struct ContentView: View {
                     .background(item.color(done: true, from: _date))
                     .cornerRadius(10)
                 }.background(Color.green.opacity(0.1))
-
-                // not done items
-                FlowLayout(items: _didList.GetDidnts(date: _date), spacing: 10){ item in
-                    Button(action: {
-                        done(item)
-                    }) {
-                        Text(item.Name).bold()
+                
+                TabView
+                {
+                    ForEach(_didList.GetCategories(), id: \.self) { tab in
+                        // not done items
+                        FlowLayout(items: _didList.GetDidnts(date: _date, cat: tab), spacing: 10){ item in
+                            Button(action: {
+                                done(item)
+                            }) {
+                                Text(item.Name).bold()
+                            }
+                            .padding(5)
+                            .background(item.color(done: false, from: _date))
+                            .cornerRadius(10)
+                        }.tabItem{
+                            Text(tab)
+                                .font(.title)
+                        }
                     }
-                    .padding(5)
-                    .background(item.color(done: false, from: _date))
-                    .cornerRadius(10)
                 }
                 HStack {
-                    NavigationLink(destination: MoodView()) {
+                    /*NavigationLink(destination: MoodView()) {
                         Text("Mood")
-                    }
+                    }*/
                     NavigationLink(destination: DidsView()) {
                         Text("Maintenance")
                     }
