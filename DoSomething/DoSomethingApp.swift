@@ -15,3 +15,6 @@ struct DoSomethingApp: App {
         }
     }
 }
+// TODO add button types- line one could be mediation time, one could be the whole rushit app with subtypes
+// TODO add a quote of the day
+

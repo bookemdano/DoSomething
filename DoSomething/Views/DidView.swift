@@ -12,7 +12,8 @@ struct DidView: View {
     let did: Did
     @Environment(\.presentationMode) var presentationMode
     @State private var _showDeleteConfirmation = false
-    @State var _didName: String = ""
+    @State var _category: String = ""
+    @State var _name: String = ""
     @State var _points: String = "1"
     @State var _notes: String = ""
  @State var _oneTime: Bool = false
@@ -22,7 +23,12 @@ struct DidView: View {
         {
             HStack{
                 Text("Name: ")
-                TextField("Name", text: $_didName)
+                TextField("Name", text: $_name)
+                    .border(Color.gray)
+            }
+            HStack{
+                Text("Category: ")
+                TextField("Category", text: $_category)
                     .border(Color.gray)
             }
             HStack{
@@ -80,7 +86,8 @@ struct DidView: View {
         }
         .padding(5)
         .onAppear {
-            _didName = did.Name
+            _name = did.Name
+            _category = did.Category ?? ""
             _points = String(did.GetPoints())
             _retired = did.Retired ?? false
             _oneTime = did.OneTime ?? false
@@ -108,7 +115,7 @@ struct DidView: View {
     func Save()
     {
         Task {
-            await DidPersist.UpdateDid(id: did.id, name: _didName, points: Int(_points) ?? 1, oneTime: _oneTime, retired: _retired, notes: _notes)
+            await DidPersist.UpdateDid(id: did.id, name: _name, category: _category, points: Int(_points) ?? 1, oneTime: _oneTime, retired: _retired, notes: _notes)
             presentationMode.wrappedValue.dismiss()
         }
     }

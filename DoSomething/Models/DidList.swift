@@ -48,17 +48,23 @@ struct DidList : Codable {
     }
     public func GetGroups() -> [String: [Did]] {
         var rv = [String: [Did]]()
-        rv["Active"] = []
-        rv["OneTime"] = []
-        rv["Retired"] = []
+        rv[""] = []
+        rv["[OneTime]"] = []
+        rv["[Retired]"] = []
        
         Dids.forEach {
-            if ($0.IsAvailable()) {
-                rv["Active"]?.append($0)
+   
+            if ($0.Retired == true) {
+                rv["[Retired]"]?.append($0)
             } else if ($0.OneTime == true) {
-                rv["OneTime"]?.append($0)
-            } else {
-                rv["Retired"]?.append($0)
+                rv["[OneTime]"]?.append($0)
+            }
+            else {
+                let cat = $0.Category ?? ""
+                if (!rv.keys.contains(cat)) {
+                    rv[cat] = []
+                }
+                rv[cat]?.append($0)
             }
         }
         return rv

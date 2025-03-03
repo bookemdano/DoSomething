@@ -155,6 +155,7 @@ struct Did : Codable, Hashable, Identifiable, Comparable
     enum CodingKeys: String, CodingKey {
         case id
         case Name
+        case Category
         case History
         case Points
         case OneTime
@@ -166,6 +167,7 @@ struct Did : Codable, Hashable, Identifiable, Comparable
     }
     var id = UUID() // Automatically generate a unique identifier
     var Name: String
+    var Category: String? = nil
     var Points: Int? = 1
     var History: [String] = []
     var OneTime: Bool? = false

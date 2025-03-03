@@ -12,7 +12,6 @@ struct DidsView: View {
     let _iop = IOPAws(app: "ToDone")
     @State private var _didList: DidList = .init()
     @State private var _owner: String = IOPAws.GetOwner()
-    @State private var _newDid: String = ""
     @State private var _showingAlert = false
     @State private var _deleteItem: String = ""
     @State private var _groups:[String: [Did]] = [:]
@@ -30,7 +29,7 @@ struct DidsView: View {
                                 {
                                     Text(item.NameString())
                                         .font(.headline)
-                                        //.strikethrough(!item.IsAvailable())
+                                    //.strikethrough(!item.IsAvailable())
                                     Spacer()
                                     Text(item.Details(from: Date()))
                                 }
@@ -90,12 +89,12 @@ struct DidsView: View {
             }
         }
         .navigationTitle("Maintenance")
-            .refreshable {
-                Refresh()
-            }
-            .onAppear {
-                Refresh()
-            }
+        .refreshable {
+            Refresh()
+        }
+        .onAppear {
+            Refresh()
+        }
         
     }
     func deleteItem(at offset: IndexSet) {

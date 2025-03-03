@@ -62,8 +62,8 @@
             filePath = "DoSomething/Views/DidsView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "149"
-            endingLineNumber = "149"
+            startingLineNumber = "148"
+            endingLineNumber = "148"
             landmarkName = "Refresh()"
             landmarkType = "7">
          </BreakpointContent>
@@ -78,8 +78,8 @@
             filePath = "DoSomething/Views/DidsView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "152"
-            endingLineNumber = "152"
+            startingLineNumber = "151"
+            endingLineNumber = "151"
             landmarkName = "Refresh()"
             landmarkType = "7">
          </BreakpointContent>
@@ -94,8 +94,8 @@
             filePath = "DoSomething/Views/DidsView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "63"
-            endingLineNumber = "63"
+            startingLineNumber = "62"
+            endingLineNumber = "62"
             landmarkName = "body"
             landmarkType = "24">
          </BreakpointContent>
@@ -112,7 +112,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "66"
             endingLineNumber = "66"
-            landmarkName = "UpdateDid(id:name:points:oneTime:retired:)"
+            landmarkName = "UpdateDid(id:name:points:oneTime:retired:notes:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -126,9 +126,9 @@
             filePath = "DoSomething/Models/DidPersist.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "84"
-            endingLineNumber = "84"
-            landmarkName = "UpdateDid(id:name:points:oneTime:retired:notes:)"
+            startingLineNumber = "86"
+            endingLineNumber = "86"
+            landmarkName = "UpdateDid(id:name:category:points:oneTime:retired:notes:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -144,7 +144,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "67"
             endingLineNumber = "67"
-            landmarkName = "UpdateDid(id:name:points:oneTime:retired:)"
+            landmarkName = "UpdateDid(id:name:points:oneTime:retired:notes:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -158,13 +158,13 @@
             filePath = "DoSomething/Views/DidsView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "116"
-            endingLineNumber = "116"
+            startingLineNumber = "115"
+            endingLineNumber = "115"
             landmarkName = "deleteItem(at:)"
             landmarkType = "7">
             <Locations>
                <Location
-                  uuid = "BEEFF328-4E45-4852-B5A1-28A54AF1C836 - a2647b62484dae6b"
+                  uuid = "BEEFF328-4E45-4852-B5A1-28A54AF1C836 - a2647b62484dae8a"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
@@ -174,11 +174,11 @@
                   urlString = "file:///Users/bookemdano/repos/DoSomething/DoSomething/Views/DidsView.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "117"
-                  endingLineNumber = "117">
+                  startingLineNumber = "116"
+                  endingLineNumber = "116">
                </Location>
                <Location
-                  uuid = "BEEFF328-4E45-4852-B5A1-28A54AF1C836 - ce8551f6d63b43b"
+                  uuid = "BEEFF328-4E45-4852-B5A1-28A54AF1C836 - ce8551f6d63b4da"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
@@ -188,11 +188,11 @@
                   urlString = "file:///Users/bookemdano/repos/DoSomething/DoSomething/Views/DidsView.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "117"
-                  endingLineNumber = "117">
+                  startingLineNumber = "116"
+                  endingLineNumber = "116">
                </Location>
                <Location
-                  uuid = "BEEFF328-4E45-4852-B5A1-28A54AF1C836 - 37b19854859d43ab"
+                  uuid = "BEEFF328-4E45-4852-B5A1-28A54AF1C836 - 37b19854859d434a"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
@@ -202,8 +202,8 @@
                   urlString = "file:///Users/bookemdano/repos/DoSomething/DoSomething/Views/DidsView.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "117"
-                  endingLineNumber = "117">
+                  startingLineNumber = "116"
+                  endingLineNumber = "116">
                </Location>
             </Locations>
          </BreakpointContent>
@@ -218,8 +218,8 @@
             filePath = "DoSomething/Views/DidsView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "108"
-            endingLineNumber = "108"
+            startingLineNumber = "107"
+            endingLineNumber = "107"
             landmarkName = "deleteItem(at:)"
             landmarkType = "7">
          </BreakpointContent>
