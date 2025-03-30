@@ -10,6 +10,7 @@ import SwiftUI
 struct ContentView: View {
     @State private var _didList: DidList = .init()
     @State private var _date: Date = Date().dateOnly
+    @State private var _cat: String = "All"
     @Environment(\.scenePhase) private var scenePhase
     
     var body: some View {
@@ -30,7 +31,7 @@ struct ContentView: View {
                     }
                 }
                 // done items
-                FlowLayout(items: _didList.GetDids(date: _date), spacing: 10){ item in
+                FlowLayout(items: _didList.GetDids(date: _date), spacing: 5){ item in
                     Button(action: {
                         undone(item)
                     }) {
@@ -41,30 +42,34 @@ struct ContentView: View {
                     .cornerRadius(10)
                 }.background(GetColor(_date))
                 
-                TabView
-                {
-                    ForEach(_didList.GetCategories(), id: \.self) { tab in
-                        // not done items
-                        FlowLayout(items: _didList.GetDidnts(date: _date, cat: tab), spacing: 10){ item in
-                            Button(action: {
-                                done(item)
-                            }) {
-                                Text(item.Name).bold()
-                            }
-                            .padding(5)
-                            .background(item.color(done: false, from: _date))
-                            .cornerRadius(10)
-                        }.tabItem{
-                            VStack{
-                                Text(tab).font(.headline)
-                            }
-                        }
+                // not done items
+                FlowLayout(items: _didList.GetDidnts(date: _date, cat: _cat), spacing: 10){ item in
+                    Button(action: {
+                        done(item)
+                    }) {
+                        Text(item.Name).bold()
                     }
+                    .padding(5)
+                    .background(item.color(done: false, from: _date))
+                    .cornerRadius(10)
                 }
                 HStack {
-                    /*NavigationLink(destination: MoodView()) {
-                        Text("Mood")
-                    }*/
+                    ForEach(_didList.GetCategories(), id: \.self) { cat in
+                        Button(action: {
+                            ChangeCat(cat)
+                        }) {
+                            Text(cat)
+                                .bold()
+                                .foregroundColor(CatForeground(cat))
+                                .background(.white)
+                        }
+                        Spacer()
+                    }
+                }
+                .padding()
+                .border(Color.gray)
+                
+                HStack {
                     NavigationLink(destination: DidsView()) {
                         Text("Maintenance")
                     }
@@ -88,10 +93,24 @@ struct ContentView: View {
                 if (_date.dateOnly != Date().dateOnly){
                     print("View update to today")
                     _date = Date().dateOnly;
-                    Refresh();
+                    Refresh()
                 }
             }
         }
+    }
+    func CatForeground(_ cat: String) -> Color
+    {
+        if (cat == _cat){
+            return Color.black
+        } else {
+            return Color.gray
+        }
+        
+    }
+    func ChangeCat(_ cat: String)
+    {
+        _cat = cat
+        Refresh()
     }
     func Next()
     {

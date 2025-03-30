@@ -6,20 +6,7 @@
 //
 
 import SwiftUICore
-
-struct WrappingHStack: View {
-    let items = Array(1...20).map { "Item \($0)" }
-    
-    var body: some View {
-        FlowLayout(items: items, spacing: 10) { item in
-            Text(item)
-                .padding(10)
-                .background(Color.blue.opacity(0.2))
-                .cornerRadius(8)
-        }
-        .padding()
-    }
-}
+import SwiftUI
 
 struct FlowLayout<Data: RandomAccessCollection, Content: View>: View where Data.Element: Hashable {
     private let items: Data
@@ -52,15 +39,19 @@ struct FlowLayout<Data: RandomAccessCollection, Content: View>: View where Data.
                 width += itemSize.width + spacing
             }
         }
+
         
-        return VStack(alignment: .leading, spacing: spacing) {
-            ForEach(rows, id: \.self) { row in
-                HStack(spacing: spacing) {
-                    ForEach(row, id: \.self) { item in
-                        content(item)
+        return ScrollView(.vertical) {
+            VStack(alignment: .leading, spacing: spacing) {
+                ForEach(rows, id: \.self) { row in
+                    HStack(spacing: spacing) {
+                        ForEach(row, id: \.self) { item in
+                            content(item)
+                        }
                     }
                 }
             }
+            .frame(maxHeight: size.height)
         }
     }
 }
