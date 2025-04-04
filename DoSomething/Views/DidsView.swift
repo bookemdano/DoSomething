@@ -7,11 +7,12 @@
 
 import SwiftUICore
 import SwiftUI
+import DanSwiftLib
 
 struct DidsView: View {
     let _iop = IOPAws(app: "ToDone")
     @State private var _didList: DidList = .init()
-    @State private var _owner: String = IOPAws.GetOwner()
+    @State private var _owner: String = IOPAws.getUserID() ?? "Template"
     @State private var _showingAlert = false
     @State private var _deleteItem: String = ""
     @State private var _groups:[String: [Did]] = [:]
@@ -132,7 +133,7 @@ struct DidsView: View {
     }
     func changeOwner(_ owner: String)
     {
-        IOPAws.ChangeOwner(owner: owner)
+        //IOPAws.ChangeOwner(owner: owner)
         Refresh()
     }
     

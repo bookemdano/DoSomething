@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		304F3CBC9A0C16C5355D702D /* Pods_DoSomething.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E48409806308F8F6AEE4AE2A /* Pods_DoSomething.framework */; };
+		A95281FE2DA0542900157DBF /* DanSwiftLib in Frameworks */ = {isa = PBXBuildFile; productRef = A95281FD2DA0542900157DBF /* DanSwiftLib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +31,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A95281FE2DA0542900157DBF /* DanSwiftLib in Frameworks */,
 				304F3CBC9A0C16C5355D702D /* Pods_DoSomething.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -83,7 +85,6 @@
 				A9C54F262D346A5500E5353D /* Sources */,
 				A9C54F272D346A5500E5353D /* Frameworks */,
 				A9C54F282D346A5500E5353D /* Resources */,
-				86138C0FABFE71857C960449 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -121,6 +122,9 @@
 			);
 			mainGroup = A9C54F212D346A5500E5353D;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				A9752FCB2DA052B200C6E8B3 /* XCLocalSwiftPackageReference "../DanSwiftLib" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = A9C54F2B2D346A5500E5353D /* Products */;
 			projectDirPath = "";
@@ -162,23 +166,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		86138C0FABFE71857C960449 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-DoSomething/Pods-DoSomething-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-DoSomething/Pods-DoSomething-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-DoSomething/Pods-DoSomething-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -410,6 +397,20 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		A9752FCB2DA052B200C6E8B3 /* XCLocalSwiftPackageReference "../DanSwiftLib" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../DanSwiftLib;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		A95281FD2DA0542900157DBF /* DanSwiftLib */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = DanSwiftLib;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = A9C54F222D346A5500E5353D /* Project object */;
 }

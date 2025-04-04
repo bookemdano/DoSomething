@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import DanSwiftLib
 
 struct ContentView: View {
     @State private var _didList: DidList = .init()
@@ -41,7 +42,7 @@ struct ContentView: View {
                     .background(item.color(done: true, from: _date))
                     .cornerRadius(10)
                 }.background(GetColor(_date))
-                
+                Text(DanSwiftLib.hello())
                 // not done items
                 FlowLayout(items: _didList.GetDidnts(date: _date, cat: _cat), spacing: 10){ item in
                     Button(action: {

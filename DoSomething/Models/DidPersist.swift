@@ -6,13 +6,14 @@
 //
 
 import Foundation
+import DanSwiftLib
 
 struct DidPersist {
     static let _iop = IOPAws(app: "ToDone")
 
     static func JsonName() -> String{
-        let rv = "dids\(IOPAws.GetOwner()).json"
-        return rv
+        //return "dids\(IOPAws.getUserID()).json"
+        return "didsDan.json"
     }
     
     static func Read() async -> [Did]{
