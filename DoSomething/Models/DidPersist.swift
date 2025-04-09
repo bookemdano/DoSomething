@@ -12,11 +12,17 @@ struct DidPersist {
     static let _iop = IOPAws(app: "ToDone")
 
     static func JsonName() -> String{
-        //return "dids\(IOPAws.getUserID()).json"
-        return "didsDan.json"
+        if (IOPAws.getUserID() == nil) {
+            return "didsEmpty.json"
+        }
+        return "dids\(IOPAws.getUserID()!).json"
+        //return "didsDan.json"
     }
     
     static func Read() async -> [Did]{
+        if (IOPAws.getUserID() == nil) {
+            return DidList.GetDefaults()
+        }
         
         let content = await _iop.Read(dir: "Data", file: JsonName())
         if (content.isEmpty){
@@ -67,9 +73,7 @@ struct DidPersist {
             let index = dids.firstIndex(where: { $0.id == id})
             if (index == nil)
             {
-                var did: Did = Did(name: name)
-                did.Category = category
-                did.Points = points
+                var did: Did = Did(name: name, category: category, points: points)
                 did.OneTime = oneTime
                 did.Retired = retired
                 did.Notes = notes

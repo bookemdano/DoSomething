@@ -10,7 +10,7 @@ import SwiftUI
 import DanSwiftLib
 
 struct DidsView: View {
-    let _iop = IOPAws(app: "ToDone")
+    @State private var _welcomed: Bool = (IOPAws.getUserID() != nil)
     @State private var _didList: DidList = .init()
     @State private var _owner: String = IOPAws.getUserID() ?? "Template"
     @State private var _showingAlert = false
@@ -75,17 +75,19 @@ struct DidsView: View {
                 .background(Color.black)
             }
             Spacer()
-            HStack{
-                Text("Owner: ")
-                TextField("Owner", text: $_owner)
-                    .background(Color.yellow.opacity(0.2))
+            if (!_welcomed)
+            {
+                SignInWithAppleButtonView($_welcomed)
+            }else{
                 Button(action: {
-                    changeOwner(_owner)
+                    IOPAws.clearUserID()
+                    _welcomed = false
+                    Refresh()
                 }){
-                    Text("Change")
+                    Text("Sign Out")
                 }
             }
-            NavigationLink(destination: DidView(did: Did(name: "New Item"))) {
+            NavigationLink(destination: DidView(did: Did(name: "New Item", category: nil, points: 1))) {
                 Text("New Item").bold()
             }
         }

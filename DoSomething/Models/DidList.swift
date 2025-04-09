@@ -13,13 +13,30 @@ struct DidList : Codable {
     enum CodingKeys: String, CodingKey {
         case Dids
     }
-
+    public static func GetDefaults() -> [Did]
+    {
+        var rv: [Did] = []
+        rv.append(Did(name: "Run 1m", category: "Exercise", points: 3))
+        rv.append(Did(name: "Walk 1m", category: "Exercise", points: 1))
+        rv.append(Did(name: "Shower", category: "Morning", points: 1))
+        rv.append(Did(name: "Lotion", category: "Morning", points: 1))
+        rv.append(Did(name: "Wordle", category: "Morning", points: 1))
+        rv.append(Did(name: "Modest Breakfast", category: "Diet", points: 1))
+        rv.append(Did(name: "Modest Lunch", category: "Diet", points: 1))
+        rv.append(Did(name: "Modest Dinner", category: "Diet", points: 1))
+        rv.append(Did(name: "Outside", category: "Day", points: 1))
+        rv.append(Did(name: "Laugh", category: "Day", points: 1))
+        rv.append(Did(name: "Meditate 5m", category: "Day", points: 1))
+        rv.append(Did(name: "Floss", category: "Night", points: 1))
+        rv.append(Did(name: "Brush 2x", category: "Night", points: 1))
+        return rv
+    }
     public mutating func Add(name: String)
     {
         if (name.isEmpty){
             return
         }
-        Dids.append(Did(name: name))
+        Dids.append(Did(name: name, category: nil, points: 1))
     }
     public mutating func Delete(name: String)
     {

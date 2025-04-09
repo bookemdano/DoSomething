@@ -16,8 +16,10 @@ struct Did : Codable, Hashable, Identifiable, Comparable
         return lhs.Name < rhs.Name
     }
     
-    init(name: String) {
+    init(name: String, category: String?, points: Int) {
         Name = name
+        Category = category
+        Points = points
     }
     func LastDoneString() -> String {
         let date = Did.parseDate(History.sorted(by: <).last)
