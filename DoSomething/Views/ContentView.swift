@@ -40,7 +40,7 @@ struct ContentView: View {
                         Button(action: {
                             undone(item)
                         }) {
-                            Text(item.Name).bold()
+                            Text(item.NameString()).bold()
                         }
                         .padding(5)
                         .background(item.color(done: true, from: _date))
@@ -51,7 +51,7 @@ struct ContentView: View {
                         Button(action: {
                             done(item)
                         }) {
-                            Text(item.Name).bold()
+                            Text(item.NameString()).bold()
                         }
                         .padding(5)
                         .background(item.color(done: false, from: _date))

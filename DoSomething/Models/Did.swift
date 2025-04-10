@@ -21,6 +21,7 @@ struct Did : Codable, Hashable, Identifiable, Comparable
         Category = category
         Points = points
     }
+
     func LastDoneString() -> String {
         let date = Did.parseDate(History.sorted(by: <).last)
         if (date == nil)
@@ -97,12 +98,19 @@ struct Did : Codable, Hashable, Identifiable, Comparable
         }
     }
     func NameString() -> String {
-        if (Notes == nil && Notes != "") {
-            return Name
-        } else {
-            return Name + "*"
+        var rv = Name
+        if (Avoid == true)
+        {
+            rv += "🚭"
         }
-        
+
+        return rv;
+    }
+    func NotesFlag() -> String {
+        if (Notes != nil && Notes != "") {
+            return "(n)"
+        }
+        else{return "";}
     }
     func Details(from: Date) -> String {
         let streak = Streak(from: from)
@@ -124,12 +132,10 @@ struct Did : Codable, Hashable, Identifiable, Comparable
     }
     mutating func SetDone(date: Date)
     {
-        Init()
         History.append(date.danFormat)
     }
     mutating func SetUnDone(date: Date)
     {
-        Init()
         History.removeAll(where: { $0 == date.danFormat })
     }
 
@@ -159,6 +165,9 @@ struct Did : Codable, Hashable, Identifiable, Comparable
         if (Retired == nil){
             Retired = false
         }
+        if (Avoid == nil){
+            Avoid = false
+        }
     }
 
     enum CodingKeys: String, CodingKey {
@@ -170,6 +179,7 @@ struct Did : Codable, Hashable, Identifiable, Comparable
         case OneTime
         case Retired
         case Notes
+        case Avoid
     }
     func GetPoints() -> Int {
         return Points ?? 1
@@ -182,6 +192,7 @@ struct Did : Codable, Hashable, Identifiable, Comparable
     var OneTime: Bool? = false
     var Retired: Bool? = false
     var Notes: String? = nil
+    var Avoid: Bool? = false
 }
 
 extension Date {

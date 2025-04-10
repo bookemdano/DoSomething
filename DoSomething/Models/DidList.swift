@@ -10,8 +10,11 @@ import Foundation
 
 struct DidList : Codable {
     var Dids: [Did] = []
+    var Version: String?
+    static let CurrentVersion = "1.0.0"
     enum CodingKeys: String, CodingKey {
         case Dids
+        case Version
     }
     public static func GetDefaults() -> [Did]
     {
@@ -44,7 +47,10 @@ struct DidList : Codable {
     }
     public func DonePoints(date: Date) -> Int
     {
-        return GetDids(date: date).reduce(0){ $0 + $1.GetPoints()}
+        let pos =  GetDids(date: date).filter{ $0.Avoid == false}.reduce(0){ $0 + $1.GetPoints()}
+        let neg =  GetDidnts(date: date, cat: "All").filter{ $0.Avoid == true}.reduce(0){ $0 + $1.GetPoints()}
+  
+        return pos + neg
     }
     public mutating func Done(did: Did, date: Date)
     {

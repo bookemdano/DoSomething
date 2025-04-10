@@ -16,7 +16,8 @@ struct DidView: View {
     @State var _name: String = ""
     @State var _points: String = "1"
     @State var _notes: String = ""
- @State var _oneTime: Bool = false
+    @State var _avoid: Bool = false
+    @State var _oneTime: Bool = false
     @State var _retired: Bool = false
     var body: some View {
         VStack
@@ -37,6 +38,7 @@ struct DidView: View {
                     .keyboardType(.numberPad)
                     .border(Color.gray)
             }
+            Toggle("Avoid", isOn: $_avoid)
             Text("Notes: ")
             TextEditor(text: $_notes)
                 .frame(height: 80)
@@ -91,6 +93,7 @@ struct DidView: View {
             _points = String(did.GetPoints())
             _retired = did.Retired ?? false
             _oneTime = did.OneTime ?? false
+            _avoid = did.Avoid ?? false
             _notes = did.Notes ?? ""
         }
         .navigationTitle(did.Name)
@@ -115,7 +118,7 @@ struct DidView: View {
     func Save()
     {
         Task {
-            await DidPersist.UpdateDid(id: did.id, name: _name, category: _category, points: Int(_points) ?? 1, oneTime: _oneTime, retired: _retired, notes: _notes)
+            await DidPersist.UpdateDid(id: did.id, name: _name, category: _category, points: Int(_points) ?? 1, oneTime: _oneTime, retired: _retired, notes: _notes, avoid: _avoid)
             presentationMode.wrappedValue.dismiss()
         }
     }

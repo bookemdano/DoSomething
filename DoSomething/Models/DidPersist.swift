@@ -33,6 +33,18 @@ struct DidPersist {
         if let jsonData = jsonString.data(using: .utf8) {
             do {
                 var didList = try JSONDecoder().decode(DidList.self, from: jsonData)
+                if (didList.Version != DidList.CurrentVersion) {
+                    var rv: [Did] = []
+                    print("Upversioning from \(didList.Version)")
+                    for did in didList.Dids {
+                        var newDid = did
+                        newDid.Init()
+                        rv.append(newDid)
+                    }
+                    didList.Dids = rv
+                    didList.Version = DidList.CurrentVersion
+                    await SaveAsync(didList: didList)
+                }
                 return didList.Dids.sorted()
             } catch {
                 print("Failed to decode JSON: \(error)")
@@ -65,7 +77,7 @@ struct DidPersist {
         let didList = DidList(Dids: dids)
         await SaveAsync(didList: didList)
     }
-    static func UpdateDid(id: UUID, name: String, category: String, points: Int, oneTime: Bool, retired: Bool, notes: String) async
+    static func UpdateDid(id: UUID, name: String, category: String, points: Int, oneTime: Bool, retired: Bool, notes: String, avoid: Bool) async
     {
         Task{
             var dids = await Read()
@@ -77,6 +89,8 @@ struct DidPersist {
                 did.OneTime = oneTime
                 did.Retired = retired
                 did.Notes = notes
+                did.Avoid = avoid
+                
                 dids.append(did)
             }
             else
@@ -87,11 +101,11 @@ struct DidPersist {
                 dids[index!].Retired = retired
                 dids[index!].OneTime = oneTime
                 dids[index!].Notes = notes
+                dids[index!].Avoid = avoid
             }
 
             let didList = DidList(Dids: dids)
             await SaveAsync(didList: didList)
         }
     }
-    
 }

@@ -32,6 +32,7 @@ struct DidsView: View {
                                         .font(.headline)
                                     //.strikethrough(!item.IsAvailable())
                                     Spacer()
+                                    Text(item.NotesFlag())
                                     Text(item.Details(from: Date()))
                                 }
                                 .padding(5)
