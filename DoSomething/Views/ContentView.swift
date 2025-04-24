@@ -44,7 +44,12 @@ struct ContentView: View {
                         }
                         .padding(5)
                         .background(item.color(done: true, from: _date))
+                        //.background(.white)
                         .cornerRadius(10)
+                        .overlay( // Add border
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(.black, lineWidth: 1)
+                        )
                     }.background(GetColor(_date))
                     // not done items
                     FlowLayout(items: _didList.GetDidnts(date: _date, cat: _cat), spacing: 10){ item in
@@ -56,6 +61,10 @@ struct ContentView: View {
                         .padding(5)
                         .background(item.color(done: false, from: _date))
                         .cornerRadius(10)
+                        .overlay( // Add border
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(.black, lineWidth: 1)
+                        )
                     }
                     HStack {
                         ForEach(_didList.GetCategories(), id: \.self) { cat in
@@ -136,7 +145,7 @@ struct ContentView: View {
 
     func GetColor(_ date: Date) -> Color {
         if (date.dateOnly == Date().dateOnly){
-            Color.green.opacity(0.1)
+            Color.cyan.opacity(0.1)
         }
         else {
             Color.red.opacity(0.5)
