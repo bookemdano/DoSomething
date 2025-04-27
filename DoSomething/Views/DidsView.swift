@@ -38,7 +38,7 @@ struct DidsView: View {
                                 .padding(5)
                                 
                             }
-                            .background(item.color(done: false, from: Date()))
+                            .listRowBackground(item.color(done: false, from: Date()))
                         }
                     }
                 }

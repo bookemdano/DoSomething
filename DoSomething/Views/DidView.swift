@@ -53,8 +53,7 @@ struct DidView: View {
             //.font(.largeTitle)
             List(did.History.sorted(by: >), id: \.self) { history in
                 Text(HistoryText(history: history))
-                    .background(did.color(done: true, from: Did.parseDate(history)!))
-            
+                    .listRowBackground(did.color(done: false, from: Did.parseDate(history)!))
             }
             HStack{
                 Button(action: {
@@ -106,7 +105,7 @@ struct DidView: View {
     func HistoryText(history:String) -> String {
         
         var txt:String = history
-        if (did.Streak(from: Did.parseDate(history)!) > 1){
+        if (_avoid != true && did.Streak(from: Did.parseDate(history)!) > 1){
             txt = "⛓️\(txt)"
         }
         return txt

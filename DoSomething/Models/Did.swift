@@ -62,12 +62,9 @@ struct Did : Codable, Hashable, Identifiable, Comparable
 
     func Streak(from: Date) -> Int {
         var streak = 0
-        if (History.count == 0) {
-            return streak
-        }
-        
+
         var checkDate = from.dateOnly
-        if (!ContinuedOnDate(date: checkDate)){    // count a streak that is up to yesterday
+        if (checkDate == Date().dateOnly && !ContinuedOnDate(date: checkDate)){    // count a streak that is up to yesterday
             checkDate = checkDate.yesterday
         }
         while(true)
