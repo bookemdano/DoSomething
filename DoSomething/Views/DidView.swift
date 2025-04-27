@@ -19,6 +19,7 @@ struct DidView: View {
     @State var _avoid: Bool = false
     @State var _oneTime: Bool = false
     @State var _retired: Bool = false
+    @State var _created: Date = Date()
     var body: some View {
         VStack
         {
@@ -38,6 +39,9 @@ struct DidView: View {
                     .keyboardType(.numberPad)
                     .border(Color.gray)
             }
+            DatePicker("Created:", selection: $_created, displayedComponents: [.date])
+               .datePickerStyle(.compact) // You can also try .wheel or .graphical
+               .padding()
             Toggle("Avoid", isOn: $_avoid)
             Text("Notes: ")
             TextEditor(text: $_notes)
@@ -95,6 +99,7 @@ struct DidView: View {
             _oneTime = did.OneTime ?? false
             _avoid = did.Avoid ?? false
             _notes = did.Notes ?? ""
+            _created = did.Created ?? Date()
         }
         .navigationTitle(did.Name)
     }
@@ -118,7 +123,7 @@ struct DidView: View {
     func Save()
     {
         Task {
-            await DidPersist.UpdateDid(id: did.id, name: _name, category: _category, points: Int(_points) ?? 1, oneTime: _oneTime, retired: _retired, notes: _notes, avoid: _avoid)
+            await DidPersist.UpdateDid(id: did.id, name: _name, category: _category, points: Int(_points) ?? 1, oneTime: _oneTime, retired: _retired, notes: _notes, avoid: _avoid, created: _created)
             presentationMode.wrappedValue.dismiss()
         }
     }

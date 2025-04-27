@@ -35,7 +35,7 @@ struct DidPersist {
                 var didList = try JSONDecoder().decode(DidList.self, from: jsonData)
                 if (didList.Version != DidList.CurrentVersion) {
                     var rv: [Did] = []
-                    print("Upversioning from \(didList.Version)")
+                    print("Upversioning from \(didList.Version ?? "0.0")")
                     for did in didList.Dids {
                         var newDid = did
                         newDid.Init()
@@ -62,6 +62,9 @@ struct DidPersist {
     static func SaveAsync(didList: DidList) async
     {
         do {
+            if (didList.Version == nil) {
+                print("DidList nil")
+            }
             let jsonData = try JSONEncoder().encode(didList)
             if let jsonString = String(data: jsonData, encoding: .utf8) {
                 await _iop.Write(dir: "Data", file: JsonName(), content: jsonString)
@@ -77,7 +80,7 @@ struct DidPersist {
         let didList = DidList(Dids: dids)
         await SaveAsync(didList: didList)
     }
-    static func UpdateDid(id: UUID, name: String, category: String, points: Int, oneTime: Bool, retired: Bool, notes: String, avoid: Bool) async
+    static func UpdateDid(id: UUID, name: String, category: String, points: Int, oneTime: Bool, retired: Bool, notes: String, avoid: Bool, created: Date) async
     {
         Task{
             var dids = await Read()
@@ -90,7 +93,7 @@ struct DidPersist {
                 did.Retired = retired
                 did.Notes = notes
                 did.Avoid = avoid
-                
+                did.Created = created
                 dids.append(did)
             }
             else
@@ -102,6 +105,7 @@ struct DidPersist {
                 dids[index!].OneTime = oneTime
                 dids[index!].Notes = notes
                 dids[index!].Avoid = avoid
+                dids[index!].Created = created
             }
 
             let didList = DidList(Dids: dids)

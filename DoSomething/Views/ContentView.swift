@@ -140,6 +140,7 @@ struct ContentView: View {
     func Refresh(){
         Task{
             _didList.Dids = await DidPersist.Read()
+            _didList.Version = DidList.CurrentVersion
         }
     }
 

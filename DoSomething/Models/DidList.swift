@@ -11,7 +11,8 @@ import Foundation
 struct DidList : Codable {
     var Dids: [Did] = []
     var Version: String?
-    static let CurrentVersion = "1.0.0"
+    //static let CurrentVersion = "1.0.0"
+    static let CurrentVersion = "1.0.1" // add created date to dids
     enum CodingKeys: String, CodingKey {
         case Dids
         case Version
@@ -47,27 +48,24 @@ struct DidList : Codable {
     }
     public func DonePoints(date: Date) -> Int
     {
-        let pos =  GetDids(date: date).filter{ $0.Avoid == false}.reduce(0){ $0 + $1.GetPoints()}
-        let neg =  GetDidnts(date: date, cat: "All").filter{ $0.Avoid == true}.reduce(0){ $0 + $1.GetPoints()}
-  
-        return pos + neg
+        return GetDids(date: date).reduce(0){ $0 + $1.GetPoints()}
     }
     public mutating func Done(did: Did, date: Date)
     {
         let index = Dids.firstIndex(where: { $0.id == did.id})
-        Dids[index!].SetDone(date: date)
+        Dids[index!].SetAction(date: date, continued: true)
     }
     
     public mutating func UnDone(did: Did, date: Date)
     {
         let index = Dids.firstIndex(where: { $0.id == did.id})
-        Dids[index!].SetUnDone(date: date)
+        Dids[index!].SetAction(date: date, continued: false)
     }
     public func GetDids(date: Date) -> [Did] {
-        return Dids.filter { $0.DoneOnDate(date: date) == true}
+        return Dids.filter { $0.ContinuedOnDate(date: date)}
     }
     public func GetDidnts(date: Date, cat: String) -> [Did] {
-        return Dids.filter { $0.DoneOnDate(date: date) == false && $0.IsAvailable() && (cat == "All" || $0.GetCategory() == cat)}
+        return Dids.filter { $0.ContinuedOnDate(date: date) == false && $0.IsAvailable() && (cat == "All" || $0.GetCategory() == cat)}
     }
     public func GetCategories() -> [String] {
         var rv = [String]()

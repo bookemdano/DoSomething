@@ -20,6 +20,7 @@ struct Did : Codable, Hashable, Identifiable, Comparable
         Name = name
         Category = category
         Points = points
+        Created = Date()
     }
 
     func LastDoneString() -> String {
@@ -46,9 +47,19 @@ struct Did : Codable, Hashable, Identifiable, Comparable
         }
         return nil
     }
-    func DoneOnDate(date: Date) -> Bool {
-        return History.contains(date.danFormat)
+    // did if it was supposed to done and didn't if it is to be avoided
+    func ContinuedOnDate(date: Date) -> Bool {
+        var inHistory = History.contains(date.danFormat)
+        if (Avoid == true) {
+            if ( date < Created ?? Date()) {
+                inHistory = false
+            } else {
+                inHistory = !inHistory
+            }
+        }
+        return inHistory
     }
+
     func Streak(from: Date) -> Int {
         var streak = 0
         if (History.count == 0) {
@@ -56,15 +67,18 @@ struct Did : Codable, Hashable, Identifiable, Comparable
         }
         
         var checkDate = from.dateOnly
-        if (!DoneOnDate(date: checkDate)){    // count a streak that is up to yesterday
+        if (!ContinuedOnDate(date: checkDate)){    // count a streak that is up to yesterday
             checkDate = checkDate.yesterday
         }
         while(true)
         {
-            if (DoneOnDate(date: checkDate))
+            if (ContinuedOnDate(date: checkDate))
             {
                 streak += 1
                 checkDate = checkDate.yesterday
+                //if (Avoid == true && checkDate < Created ?? Date()){
+                //    break
+                //}
             }
             else
             {
@@ -121,7 +135,7 @@ struct Did : Codable, Hashable, Identifiable, Comparable
             streakString = " ⛓️:\(streak)"
             doneString = ""
         }
-        if (DoneOnDate(date: Date().dateOnly)){
+        if (ContinuedOnDate(date: Date().dateOnly)){
             doneString = " ✅"
         }
         if (GetPoints() > 1){
@@ -130,14 +144,26 @@ struct Did : Codable, Hashable, Identifiable, Comparable
             
         return "D:\(History.count)\(doneString)\(streakString)\(pointsString)"
     }
-    mutating func SetDone(date: Date)
+    mutating func SetAction(date: Date, continued: Bool)
     {
-        History.append(date.danFormat)
+        if (date < Created ?? Date()) {
+            Created = date
+        }
+        if (continued) {
+            if (Avoid == true) {
+                History.removeAll(where: { $0 == date.danFormat })
+            } else {
+                History.append(date.danFormat)
+            }
+        } else {
+            if (Avoid == true) {
+                History.append(date.danFormat)
+            } else {
+                History.removeAll(where: { $0 == date.danFormat })
+            }
+        }
     }
-    mutating func SetUnDone(date: Date)
-    {
-        History.removeAll(where: { $0 == date.danFormat })
-    }
+
 
     func IsAvailable() -> Bool {
         if (Retired == true){
@@ -168,6 +194,9 @@ struct Did : Codable, Hashable, Identifiable, Comparable
         if (Avoid == nil){
             Avoid = false
         }
+        if (Created == nil){
+            Created = Did.parseDate(History.first ?? Date().danFormat)
+        }
     }
 
     enum CodingKeys: String, CodingKey {
@@ -180,6 +209,7 @@ struct Did : Codable, Hashable, Identifiable, Comparable
         case Retired
         case Notes
         case Avoid
+        case Created
     }
     func GetPoints() -> Int {
         return Points ?? 1
@@ -193,6 +223,7 @@ struct Did : Codable, Hashable, Identifiable, Comparable
     var Retired: Bool? = false
     var Notes: String? = nil
     var Avoid: Bool? = false
+    var Created: Date? = Date()
 }
 
 extension Date {
