@@ -143,7 +143,7 @@ struct DidsView: View {
     func Refresh()
     {
         Task{
-            _didList.Dids = await DidPersist.Read()
+            _didList = await DidPersist.Read()
             _groups = _didList.GetGroups(includeDone: true)
             _pointsHistory.removeAll()
             var date = Calendar.current.date(byAdding: .day, value: -30, to: Date()) ?? Date()

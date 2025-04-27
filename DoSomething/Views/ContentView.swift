@@ -139,8 +139,9 @@ struct ContentView: View {
     }
     func Refresh(){
         Task{
-            _didList.Dids = await DidPersist.Read()
-            _didList.Version = DidList.CurrentVersion
+            _didList = await DidPersist.Read()
+    //        _didList.Dids = await DidPersist.Read()
+      //      _didList.Version = DidList.CurrentVersion // this is because of the way I don't update the whole didList, should be fixed
         }
     }
 

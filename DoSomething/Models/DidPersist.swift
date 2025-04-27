@@ -19,14 +19,14 @@ struct DidPersist {
         //return "didsDan.json"
     }
     
-    static func Read() async -> [Did]{
+    static func Read() async -> DidList{
         if (IOPAws.getUserID() == nil) {
-            return DidList.GetDefaults()
+            return DidList.GetDefault()
         }
         
         let content = await _iop.Read(dir: "Data", file: JsonName())
         if (content.isEmpty){
-            return DidList().Dids
+            return DidList()
         }
         
         let jsonString = content
@@ -45,12 +45,13 @@ struct DidPersist {
                     didList.Version = DidList.CurrentVersion
                     await SaveAsync(didList: didList)
                 }
-                return didList.Dids.sorted()
+                didList.Dids = didList.Dids.sorted()
+                return didList
             } catch {
                 print("Failed to decode JSON: \(error)")
             }
         }
-        return DidList().Dids
+        return DidList()
     }
     static func SaveSync(didList: DidList)
     {
@@ -75,17 +76,16 @@ struct DidPersist {
     }
     static func RemoveDid(id: UUID) async
     {
-        var dids = await Read()
-        dids.removeAll(where: { $0.id == id})
-        let didList = DidList(Dids: dids)
+        var didList = await Read()
+        didList.Dids.removeAll(where: { $0.id == id})
         await SaveAsync(didList: didList)
     }
     static func UpdateDid(id: UUID, name: String, category: String, points: Int, oneTime: Bool, retired: Bool, notes: String, avoid: Bool, created: Date) async
     {
         Task{
-            var dids = await Read()
+            var didList = await Read()
 
-            let index = dids.firstIndex(where: { $0.id == id})
+            let index = didList.Dids.firstIndex(where: { $0.id == id})
             if (index == nil)
             {
                 var did: Did = Did(name: name, category: category, points: points)
@@ -94,21 +94,20 @@ struct DidPersist {
                 did.Notes = notes
                 did.Avoid = avoid
                 did.Created = created
-                dids.append(did)
+                didList.Dids.append(did)
             }
             else
             {
-                dids[index!].Name = name
-                dids[index!].Category = category
-                dids[index!].Points = points
-                dids[index!].Retired = retired
-                dids[index!].OneTime = oneTime
-                dids[index!].Notes = notes
-                dids[index!].Avoid = avoid
-                dids[index!].Created = created
+                didList.Dids[index!].Name = name
+                didList.Dids[index!].Category = category
+                didList.Dids[index!].Points = points
+                didList.Dids[index!].Retired = retired
+                didList.Dids[index!].OneTime = oneTime
+                didList.Dids[index!].Notes = notes
+                didList.Dids[index!].Avoid = avoid
+                didList.Dids[index!].Created = created
             }
 
-            let didList = DidList(Dids: dids)
             await SaveAsync(didList: didList)
         }
     }
