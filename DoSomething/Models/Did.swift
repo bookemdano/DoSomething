@@ -10,6 +10,7 @@ import SwiftUICore
 // TODO every other day streaks or weekday streaks
 // TODONE Mark items as "non-current" so only show up in maint
 // TODO Faster streak check
+// TODO Add Range for like running and walking where you can enter amount after
 struct Did : Codable, Hashable, Identifiable, Comparable
 {
     static func < (lhs: Did, rhs: Did) -> Bool {
