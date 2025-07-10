@@ -75,11 +75,11 @@ struct DidList : Codable {
         if (cat == "Rem") {
             var rv : [Did] = []
  
-            //let todayReminders = Reminders!.filter({ $0.dueDate.dateOnly == date.dateOnly })
-            let reminders = Reminders!.filter({ $0.isComplete == false })
-      
+            let reminders = Reminders!.filter({ $0.dueDate?.dateOnly == date.dateOnly })
+            //let reminders = Reminders!.filter({ $0.isComplete == false })
+            
             for reminder in reminders {
-                var did = Did(name: reminder.title + reminder.dueDate.description, category: "Rem", points: 1)
+                var did = Did(name: reminder.title, category: "Rem", points: 1)
                 rv.append(did)
             }
             return rv

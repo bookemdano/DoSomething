@@ -37,16 +37,30 @@ final class ReminderStore {
         guard isAvailable else {
             throw TodayError.accessDenied
         }
-
-        let predicate = ekStore.predicateForReminders(in: nil)
+        let predicate: NSPredicate  = ekStore.predicateForReminders(in: nil)
+        /* new way
+        var rv: [Reminder] = []
+        if let aPredicate = predicate {
+            ekStore.fetchReminders(matching: aPredicate, completion: {(_ reminders: [Any]?) -> Void in
+                for ekReminder: EKReminder? in reminders as? [EKReminder?] ?? [EKReminder?]() {
+                    if (ekReminder != nil && ekReminder?.isCompleted == false) {
+                        rv.append(Reminder(with: ekReminder!))
+                    }
+                }
+            })
+        }
+         return rv
+          */
+        //old way
         let ekReminders = try await ekStore.reminders(matching: predicate)
-        let reminders: [Reminder] = try ekReminders.compactMap { ekReminder in
-            do {
-                return try Reminder(with: ekReminder)
-            } catch TodayError.reminderHasNoDueDate {
+        let reminders: [Reminder?] = ekReminders.compactMap { ekReminder in
+            if (ekReminder.isCompleted == false) {
+                return Reminder(with: ekReminder)
+            }else{
                 return nil
             }
         }
-        return reminders
+        return reminders.compactMap{$0}
+        
     }
 }
