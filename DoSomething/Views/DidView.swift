@@ -105,7 +105,7 @@ struct DidView: View {
     func HistoryText(history:String) -> String {
         
         var txt:String = history
-        if (_avoid != true && did.Streak(from: Did.parseDate(history)!) > 1){
+        if (did.Streak(from: Did.parseDate(history)!) > 1){
             txt = "⛓️\(txt)"
         }
         return txt

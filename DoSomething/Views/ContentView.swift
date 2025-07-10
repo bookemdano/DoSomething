@@ -14,7 +14,9 @@ struct ContentView: View {
     @State private var _date: Date = Date().dateOnly
     @State private var _cat: String = "All"
     @Environment(\.scenePhase) private var scenePhase
-    
+    private var reminderStore: ReminderStore { ReminderStore.shared }
+    @State private var reminders: [Reminder] = []
+  
     var body: some View {
         NavigationView{
             if (!_welcomed) {
@@ -112,6 +114,28 @@ struct ContentView: View {
             }
         }
     }
+    func prepareReminderStore() {
+        Task {
+            do {
+                try await reminderStore.requestAccess()
+                reminders = try await reminderStore.readAll()
+                _didList.AddReminders(reminders)
+                
+                print(reminders)
+            } catch TodayError.accessDenied{
+#if DEBUG
+                reminders = Reminder.sampleData
+#endif
+            } catch TodayError.accessRestricted {
+#if DEBUG
+                reminders = Reminder.sampleData
+#endif
+            } catch {
+                print(error)
+            }
+            //updateSnapshot()
+        }
+    }
     func CatForeground(_ cat: String) -> Color
     {
         if (cat == _cat){
@@ -142,6 +166,7 @@ struct ContentView: View {
             _didList = await DidPersist.Read()
     //        _didList.Dids = await DidPersist.Read()
       //      _didList.Version = DidList.CurrentVersion // this is because of the way I don't update the whole didList, should be fixed
+            prepareReminderStore()
         }
     }
 

@@ -11,6 +11,7 @@ import Foundation
 struct DidList : Codable {
     var Dids: [Did] = []
     var Version: String?
+    var Reminders : [Reminder]? = []
     //static let CurrentVersion = "1.0.0"
     static let CurrentVersion = "1.0.1" // add created date to dids
     enum CodingKeys: String, CodingKey {
@@ -43,6 +44,11 @@ struct DidList : Codable {
         }
         Dids.append(Did(name: name, category: nil, points: 1))
     }
+    public mutating func AddReminders(_ reminders: [Reminder])
+    {
+        Reminders = reminders
+   
+    }
     public mutating func Delete(name: String)
     {
         Dids.removeAll(where: { $0.Name == name})
@@ -66,6 +72,18 @@ struct DidList : Codable {
         return Dids.filter { $0.ContinuedOnDate(date: date)}
     }
     public func GetDidnts(date: Date, cat: String) -> [Did] {
+        if (cat == "Rem") {
+            var rv : [Did] = []
+ 
+            //let todayReminders = Reminders!.filter({ $0.dueDate.dateOnly == date.dateOnly })
+            let reminders = Reminders!.filter({ $0.isComplete == false })
+      
+            for reminder in reminders {
+                var did = Did(name: reminder.title + reminder.dueDate.description, category: "Rem", points: 1)
+                rv.append(did)
+            }
+            return rv
+        }
         return Dids.filter { $0.ContinuedOnDate(date: date) == false && $0.IsAvailable() && (cat == "All" || $0.GetCategory() == cat)}
     }
     public func GetCategories() -> [String] {
@@ -79,6 +97,7 @@ struct DidList : Codable {
                 }
             }
         }
+        rv.append("Rem")
         return rv
     }
     public func GetGroups(includeDone: Bool) -> [String: [Did]] {

@@ -48,17 +48,8 @@ struct Did : Codable, Hashable, Identifiable, Comparable
         }
         return nil
     }
-    // did if it was supposed to done and didn't if it is to be avoided
     func ContinuedOnDate(date: Date) -> Bool {
-        var inHistory = History.contains(date.danFormat)
-        if (Avoid == true) {
-            if ( date < Created ?? Date()) {
-                inHistory = false
-            } else {
-                inHistory = !inHistory
-            }
-        }
-        return inHistory
+        return History.contains(date.danFormat)
     }
 
     func Streak(from: Date) -> Int {
@@ -74,9 +65,6 @@ struct Did : Codable, Hashable, Identifiable, Comparable
             {
                 streak += 1
                 checkDate = checkDate.yesterday
-                //if (Avoid == true && checkDate < Created ?? Date()){
-                //    break
-                //}
             }
             else
             {
@@ -110,13 +98,12 @@ struct Did : Codable, Hashable, Identifiable, Comparable
         }
     }
     func NameString() -> String {
-        var rv = Name
-        if (Avoid == true)
-        {
-            rv += "🚭"
+        if (Avoid == true) {
+            return "🚭" + Name
         }
-
-        return rv;
+        else {
+            return Name
+        }
     }
     func NotesFlag() -> String {
         if (Notes != nil && Notes != "") {
@@ -148,17 +135,9 @@ struct Did : Codable, Hashable, Identifiable, Comparable
             Created = date
         }
         if (continued) {
-            if (Avoid == true) {
-                History.removeAll(where: { $0 == date.danFormat })
-            } else {
-                History.append(date.danFormat)
-            }
+            History.append(date.danFormat)
         } else {
-            if (Avoid == true) {
-                History.append(date.danFormat)
-            } else {
-                History.removeAll(where: { $0 == date.danFormat })
-            }
+            History.removeAll(where: { $0 == date.danFormat })
         }
     }
 
