@@ -175,7 +175,7 @@ struct ContentView: View {
             Color.cyan.opacity(0.1)
         }
         else {
-            Color.red.opacity(0.5)
+            Color.red
         }
     }
     func done(_ did: Did)
