@@ -30,7 +30,7 @@ struct ContentView: View {
                             Text("⏮️")
                         }
                         Text(_date.danFormat + "(\(_didList.DonePoints(date: _date)))")
-                            .bold()
+                            .bold().background(GetColor(_date))
                         Button(action: {
                             Next()
                         }){
@@ -42,7 +42,7 @@ struct ContentView: View {
                         Button(action: {
                             undone(item)
                         }) {
-                            Text(item.NameString()).bold()
+                            Text(item.NameString()).bold().foregroundStyle(Color.white.opacity(0.85))
                         }
                         .padding(5)
                         .background(item.color(done: true, from: _date))
@@ -52,13 +52,13 @@ struct ContentView: View {
                             RoundedRectangle(cornerRadius: 10)
                                 .stroke(.black, lineWidth: 1)
                         )
-                    }.background(GetColor(_date))
+                    }
                     // not done items
                     FlowLayout(items: _didList.GetDidnts(date: _date, cat: _cat), spacing: 10){ item in
                         Button(action: {
                             done(item)
                         }) {
-                            Text(item.NameString()).bold()
+                            Text(item.NameString()).bold().foregroundStyle(Color.white.opacity(0.85))
                         }
                         .padding(5)
                         .background(item.color(done: false, from: _date))

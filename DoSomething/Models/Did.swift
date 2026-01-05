@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import SwiftUICore
+import SwiftUI
 // TODO every other day streaks or weekday streaks
 // TODONE Mark items as "non-current" so only show up in maint
 // TODO Faster streak check
