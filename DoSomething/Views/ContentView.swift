@@ -42,7 +42,7 @@ struct ContentView: View {
                         Button(action: {
                             undone(item)
                         }) {
-                            Text(item.NameString()).bold().foregroundStyle(Color.white.opacity(0.85))
+                            Text(item.NameString()).bold()
                         }
                         .padding(5)
                         .background(item.color(done: true, from: _date))
@@ -58,7 +58,7 @@ struct ContentView: View {
                         Button(action: {
                             done(item)
                         }) {
-                            Text(item.NameString()).bold().foregroundStyle(Color.white.opacity(0.85))
+                            Text(item.NameString()).bold()
                         }
                         .padding(5)
                         .background(item.color(done: false, from: _date))
