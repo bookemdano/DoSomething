@@ -18,5 +18,6 @@ extension Reminder {
         }
         notes = ekReminder.notes
         isComplete = ekReminder.isCompleted
+        completionDate = ekReminder.completionDate
     }
 }

@@ -6,12 +6,19 @@
 //
 
 import SwiftUI
+#if canImport(DanSwiftLib)
 import DanSwiftLib
+#endif
 
 struct DidsView: View {
+#if canImport(DanSwiftLib)
     @State private var _welcomed: Bool = (IOPAws.getUserID() != nil)
-    @State private var _didList: DidList = .init()
     @State private var _owner: String = IOPAws.getUserID() ?? "Template"
+#else
+    @State private var _welcomed: Bool = true
+    @State private var _owner: String = "Local"
+#endif
+    @State private var _didList: DidList = .init()
     @State private var _showingAlert = false
     @State private var _deleteItem: String = ""
     @State private var _groups:[String: [Did]] = [:]
@@ -75,6 +82,7 @@ struct DidsView: View {
                 .background(Color.black)
             }
             Spacer()
+            #if canImport(DanSwiftLib)
             if (!_welcomed)
             {
                 SignInWithAppleButtonView($_welcomed)
@@ -87,18 +95,21 @@ struct DidsView: View {
                     Text("Sign Out")
                 }
             }
+            #endif
             NavigationLink(destination: DidView(did: Did(name: "New Item", category: nil, points: 1))) {
                 Text("New Item").bold()
             }
         }
         .navigationTitle("Maintenance")
+        #if os(iOS)
         .refreshable {
             Refresh()
         }
+        #endif
         .onAppear {
             Refresh()
         }
-        
+
     }
     func deleteItem(at offset: IndexSet) {
         

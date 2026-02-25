@@ -13,6 +13,9 @@ struct DoSomethingApp: App {
         WindowGroup {
             ContentView().preferredColorScheme(.light)
         }
+        #if os(macOS)
+        .defaultSize(width: 600, height: 700)
+        #endif
     }
 }
 // TODO add button types- line one could be mediation time, one could be the whole rushit app with subtypes

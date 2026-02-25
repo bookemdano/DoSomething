@@ -35,7 +35,9 @@ struct DidView: View {
             HStack{
                 Text("Points: ")
                 TextField("points", text: $_points)
+                    #if os(iOS)
                     .keyboardType(.numberPad)
+                    #endif
                     .border(Color.gray)
             }
             DatePicker("Created:", selection: $_created, displayedComponents: [.date])

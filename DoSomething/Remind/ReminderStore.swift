@@ -61,6 +61,31 @@ final class ReminderStore {
             }
         }
         return reminders.compactMap{$0}
-        
+
+    }
+
+    /// Fetches reminders due today or overdue that are incomplete, plus reminders completed today.
+    func readDueAndOverdue() async throws -> [Reminder] {
+        guard isAvailable else {
+            throw TodayError.accessDenied
+        }
+        let predicate = ekStore.predicateForReminders(in: nil)
+        let ekReminders = try await ekStore.reminders(matching: predicate)
+        let startOfToday = Calendar.current.startOfDay(for: Date())
+        let endOfToday = startOfToday.addingTimeInterval(86400)
+        return ekReminders.compactMap { ekReminder in
+            let reminder = Reminder(with: ekReminder)
+            guard let due = reminder.dueDate else { return nil }
+            // Include if: incomplete and due today or overdue
+            if !reminder.isComplete && due < endOfToday {
+                return reminder
+            }
+            // Include if: completed today (regardless of original due date)
+            if reminder.isComplete, let completed = reminder.completionDate,
+               completed >= startOfToday && completed < endOfToday {
+                return reminder
+            }
+            return nil
+        }
     }
 }

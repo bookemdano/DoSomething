@@ -6,21 +6,32 @@
 //
 
 import SwiftUI
+#if canImport(DanSwiftLib)
 import DanSwiftLib
+#endif
 
 struct ContentView: View {
+#if canImport(DanSwiftLib)
     @State private var _welcomed: Bool = (IOPAws.getUserID() != nil)
+#else
+    @State private var _welcomed: Bool = true
+#endif
     @State private var _didList: DidList = .init()
     @State private var _date: Date = Date().dateOnly
     @State private var _cat: String = "All"
     @Environment(\.scenePhase) private var scenePhase
     private var reminderStore: ReminderStore { ReminderStore.shared }
     @State private var reminders: [Reminder] = []
+    @State private var _cachedDueReminders: [Reminder]? = nil
   
     var body: some View {
         NavigationView{
             if (!_welcomed) {
+                #if canImport(DanSwiftLib)
                 SignInWithAppleButtonView($_welcomed)
+                #else
+                Text("Not signed in")
+                #endif
             } else {
                 VStack{
                     HStack{
@@ -29,7 +40,7 @@ struct ContentView: View {
                         }){
                             Text("⏮️")
                         }
-                        Text(_date.danFormat + "(\(_didList.DonePoints(date: _date)))")
+                        Text(_date.danFormat + " (\(ScoreText()))")
                             .bold().background(GetColor(_date))
                         Button(action: {
                             Next()
@@ -89,15 +100,17 @@ struct ContentView: View {
                             Text("Maintenance")
                         }
                         Button(action: {
-                            Refresh()
+                            Refresh(reloadReminders: true)
                         }){
                             Text("🔄")
                         }
                     }
                 }
+                #if os(iOS)
                 .refreshable {
-                    Refresh()
+                    Refresh(reloadReminders: true)
                 }
+                #endif
                 .onAppear {
                     Refresh()
                 }
@@ -120,8 +133,9 @@ struct ContentView: View {
                 try await reminderStore.requestAccess()
                 reminders = try await reminderStore.readAll()
                 _didList.AddReminders(reminders)
-                
-                print(reminders)
+                let dueReminders = try await reminderStore.readDueAndOverdue()
+                _cachedDueReminders = dueReminders
+                _didList.AddDueReminders(dueReminders)
             } catch TodayError.accessDenied{
 #if DEBUG
                 reminders = Reminder.sampleData
@@ -133,8 +147,17 @@ struct ContentView: View {
             } catch {
                 print(error)
             }
-            //updateSnapshot()
         }
+    }
+    func ScoreText() -> String {
+        let didPts = _didList.DonePoints(date: _date)
+        let remPts = _didList.ReminderPoints()
+        let total = didPts + remPts
+        let remSummary = _didList.ReminderSummary()
+        if remSummary.isEmpty {
+            return "\(total)"
+        }
+        return "\(total) \(remSummary)"
     }
     func CatForeground(_ cat: String) -> Color
     {
@@ -161,12 +184,19 @@ struct ContentView: View {
     {
         _date = Calendar.current.date(byAdding: .day, value: -1, to: _date) ?? Date()
     }
-    func Refresh(){
+    func Refresh(reloadReminders: Bool = false){
         Task{
             _didList = await DidPersist.Read()
-    //        _didList.Dids = await DidPersist.Read()
-      //      _didList.Version = DidList.CurrentVersion // this is because of the way I don't update the whole didList, should be fixed
-            prepareReminderStore()
+            // Restore cached reminder data immediately to avoid flash
+            if let cached = _cachedDueReminders {
+                _didList.AddDueReminders(cached)
+            }
+            if let cached = reminders as [Reminder]?, !cached.isEmpty {
+                _didList.AddReminders(cached)
+            }
+            if reloadReminders || _cachedDueReminders == nil {
+                prepareReminderStore()
+            }
         }
     }
 

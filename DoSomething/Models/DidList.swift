@@ -12,6 +12,7 @@ struct DidList : Codable {
     var Dids: [Did] = []
     var Version: String?
     var Reminders : [Reminder]? = []
+    var DueReminders : [Reminder]? = []
     //static let CurrentVersion = "1.0.0"
     static let CurrentVersion = "1.0.1" // add created date to dids
     enum CodingKeys: String, CodingKey {
@@ -47,7 +48,25 @@ struct DidList : Codable {
     public mutating func AddReminders(_ reminders: [Reminder])
     {
         Reminders = reminders
-   
+    }
+    public mutating func AddDueReminders(_ reminders: [Reminder])
+    {
+        DueReminders = reminders
+    }
+    public func RemindersDone() -> Int {
+        return (DueReminders ?? []).filter({ $0.isComplete }).count
+    }
+    public func RemindersTotal() -> Int {
+        return (DueReminders ?? []).count
+    }
+    public func ReminderPoints() -> Int {
+        return RemindersDone()
+    }
+    public func ReminderSummary() -> String {
+        let total = RemindersTotal()
+        if total == 0 { return "" }
+        let done = RemindersDone()
+        return "R:\(done)/\(total)"
     }
     public mutating func Delete(name: String)
     {
@@ -69,14 +88,24 @@ struct DidList : Codable {
         Dids[index!].SetAction(date: date, continued: false)
     }
     public func GetDids(date: Date) -> [Did] {
-        return Dids.filter { $0.ContinuedOnDate(date: date)}
+        var rv = Dids.filter { $0.ContinuedOnDate(date: date)}
+        // Add reminders completed today to the done section
+        let startOfToday = Calendar.current.startOfDay(for: Date())
+        let endOfToday = startOfToday.addingTimeInterval(86400)
+        for reminder in (DueReminders ?? []) {
+            if reminder.isComplete, let completed = reminder.completionDate,
+               completed >= startOfToday && completed < endOfToday {
+                rv.append(Did(name: "✅ " + reminder.title, category: "Rem", points: 1))
+            }
+        }
+        return rv
     }
     public func GetDidnts(date: Date, cat: String) -> [Did] {
         if (cat == "Rem") {
             var rv : [Did] = []
  
-            let reminders = Reminders!.filter({ $0.dueDate?.dateOnly == date.dateOnly })
-            //let reminders = Reminders!.filter({ $0.isComplete == false })
+            let endOfToday = Calendar.current.startOfDay(for: Date()).addingTimeInterval(86400)
+            let reminders = (Reminders ?? []).filter({ $0.dueDate != nil && $0.dueDate! < endOfToday })
             
             for reminder in reminders {
                 var did = Did(name: reminder.title, category: "Rem", points: 1)

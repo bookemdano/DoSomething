@@ -6,9 +6,12 @@
 //
 
 import Foundation
+#if canImport(DanSwiftLib)
 import DanSwiftLib
+#endif
 
 struct DidPersist {
+#if canImport(DanSwiftLib)
     static let _iop = IOPAws(app: "ToDone")
 
     static func JsonName() -> String{
@@ -16,19 +19,18 @@ struct DidPersist {
             return "didsEmpty.json"
         }
         return "dids\(IOPAws.getUserID()!).json"
-        //return "didsDan.json"
     }
-    
+
     static func Read() async -> DidList{
         if (IOPAws.getUserID() == nil) {
             return DidList.GetDefault()
         }
-        
+
         let content = await _iop.Read(dir: "Data", file: JsonName())
         if (content.isEmpty){
             return DidList()
         }
-        
+
         let jsonString = content
         if let jsonData = jsonString.data(using: .utf8) {
             do {
@@ -74,6 +76,60 @@ struct DidPersist {
             print("Error serializing JSON: \(error)")
         }
     }
+#else
+    // macOS local file persistence
+    static func localFileURL() -> URL {
+        let appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
+        let appDir = appSupport.appendingPathComponent("DoSomething")
+        try? FileManager.default.createDirectory(at: appDir, withIntermediateDirectories: true)
+        return appDir.appendingPathComponent("dids.json")
+    }
+
+    static func Read() async -> DidList {
+        let fileURL = localFileURL()
+        guard let data = try? Data(contentsOf: fileURL),
+              let jsonString = String(data: data, encoding: .utf8),
+              !jsonString.isEmpty,
+              let jsonData = jsonString.data(using: .utf8) else {
+            return DidList.GetDefault()
+        }
+        do {
+            var didList = try JSONDecoder().decode(DidList.self, from: jsonData)
+            if (didList.Version != DidList.CurrentVersion) {
+                var rv: [Did] = []
+                print("Upversioning from \(didList.Version ?? "0.0")")
+                for did in didList.Dids {
+                    var newDid = did
+                    newDid.Init()
+                    rv.append(newDid)
+                }
+                didList.Dids = rv
+                didList.Version = DidList.CurrentVersion
+                await SaveAsync(didList: didList)
+            }
+            didList.Dids = didList.Dids.sorted()
+            return didList
+        } catch {
+            print("Failed to decode JSON: \(error)")
+        }
+        return DidList()
+    }
+
+    static func SaveSync(didList: DidList) {
+        Task {
+            await SaveAsync(didList: didList)
+        }
+    }
+
+    static func SaveAsync(didList: DidList) async {
+        do {
+            let jsonData = try JSONEncoder().encode(didList)
+            try jsonData.write(to: localFileURL())
+        } catch {
+            print("Error saving JSON: \(error)")
+        }
+    }
+#endif
     static func RemoveDid(id: UUID) async
     {
         var didList = await Read()

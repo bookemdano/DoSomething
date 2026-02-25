@@ -10,6 +10,7 @@ struct Reminder: Equatable, Identifiable {
     var dueDate: Date?
     var notes: String? = nil
     var isComplete: Bool = false
+    var completionDate: Date? = nil
 }
 
 extension [Reminder] {
